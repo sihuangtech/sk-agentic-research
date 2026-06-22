@@ -205,3 +205,33 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Project editor settings
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# JavaScript dependencies and build output
+frontend/node_modules/
+frontend/dist/
+backend/static/
+
+# Local runtime files
+system.log
+.env.*
+!.env.example
+
+# LaTeX compiler intermediates (generated papers and source remain versioned)
+src/workspace/latex/**/*.aux
+src/workspace/latex/**/*.bbl
+src/workspace/latex/**/*.blg
+src/workspace/latex/**/*.fdb_latexmk
+src/workspace/latex/**/*.fls
+src/workspace/latex/**/*.log
+src/workspace/latex/**/*.out
+src/workspace/latex/**/*.synctex.gz
+src/workspace/latex/**/*.toc
