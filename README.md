@@ -4,18 +4,37 @@ Papermill connects evidence discovery, falsifiable hypotheses, experiment planni
 
 [中文文档](README.zh.md)
 
-## Core guarantees
+## What you can do with it
 
-- Typed contracts for evidence, hypotheses, experiment manifests, trials, and validation reports.
-- Atomic run state and an append-only event timeline for recovery and audit.
-- Baseline/candidate comparisons on identical metrics and seed schedules.
-- Separate development and held-out seeds; only held-out results determine the final decision.
-- Explicit `accepted`, `rejected`, `inconclusive`, and `invalid` outcomes.
-- Bounded candidate iteration instead of unbounded benchmark searching.
-- Static code checks, secret-stripped environments, time/memory/output limits, and no shell execution.
-- Real Papermill execution for parameterized Jupyter notebooks.
-- Human approval before generated code runs by default.
-- Citation allowlists and mandatory negative-result labels in generated reports.
+### Turn a research direction into an executable plan
+
+Provide a topic such as “reliable few-shot medical image segmentation.” Papermill collects and organizes evidence, proposes falsifiable hypotheses, and creates an experiment plan with a baseline, candidate approach, metrics, seed schedule, and pass criteria. The plan pauses for your approval before generated code runs.
+
+### Run AI-authored experiments, not just AI-written conclusions
+
+After approval, Papermill generates Python experiments or parameterized Jupyter notebooks and runs them locally under controlled limits. Each trial retains its code, inputs, raw results, logs, exit status, and duration. Executed notebooks are retained for review and reproduction.
+
+### Judge results with held-out validation
+
+Development seeds are used to improve a candidate; separate held-out seeds are used only for the final decision. Papermill compares baseline and candidate success rate, minimum improvement, and variability, then reports `accepted`, `rejected`, `inconclusive`, or `invalid` rather than treating a single successful run as a finding.
+
+### Produce an auditable research report
+
+Completed runs can produce Markdown, LaTeX, and optional PDF reports. Citations are drawn from the saved evidence snapshot, and results and limitations are included. Unvalidated results are explicitly labelled instead of being presented as positive conclusions.
+
+### Manage the workflow locally
+
+Use the CLI or Web console to see progress, live logs, metrics, hypotheses, reports, and approval requests. Interrupted runs can be resumed or cancelled. Runtime artifacts stay in the local `data/workspace/` directory.
+
+### Use your own model provider
+
+OpenAI, Anthropic Claude, and Google Gemini are supported. Each provider has its own Base URL, model ID, and API key. OpenAI can use either the Responses API or the traditional Chat Completions-compatible interface, including compatible gateways that provide the selected interface.
+
+## Operating boundaries
+
+- Metrics, thresholds, and seed schedules are fixed before each experiment; baseline and candidate are compared under the same conditions.
+- Generated code does not run through a shell. API keys are removed from its environment, and execution has time, memory, and log limits.
+- Papermill helps design, execute, and audit research; it cannot prove that a study design is sound, data is leak-free, or a conclusion is statistically significant. Domain review remains necessary for high-stakes research.
 
 ## Workflow
 
@@ -29,24 +48,6 @@ Research direction
   -> independent held-out validation
   -> accepted / rejected / inconclusive / invalid
   -> Markdown / LaTeX / optional PDF report
-```
-
-## Project layout
-
-There are only two deployable application boundaries:
-
-```text
-backend/                 FastAPI, CLI, research domain, execution and workflow
-├── api/                 HTTP routes, dependencies and process management
-├── core/                Configuration, atomic storage and run repository
-├── domain/              Typed research contracts
-├── infrastructure/      LLM, search, code policy and executors
-├── research/            Literature, hypotheses, planning, validation and writing
-└── workflow/            Resumable workflow engine and dependency assembly
-frontend/                React/Vite web console
-data/workspace/          Local runtime artifacts; not an application package
-tests/                   Unit and real offline execution tests
-docs/                    Architecture, protocol and security documentation
 ```
 
 ## Install
@@ -69,8 +70,6 @@ cp .env.example .env
 OpenAI, Anthropic Claude, and Google Gemini each support a Base URL, model ID, and API key through the Web settings page or their provider-prefixed environment variables. OpenAI can use either the traditional Chat Completions-compatible interface or the Responses API. Keys are stored only in the Git-ignored local `.env` and are never returned by the API.
 
 The defaults are `gpt-5.6-terra` through the Responses API, `claude-sonnet-5`, and `gemini-3.5-flash`. For a third-party compatibility gateway, use only model IDs and API modes exposed by that gateway.
-
-An editable setuptools installation may generate `local_ai_papermill.egg-info`. It is ignored package metadata, not a source or deployment directory.
 
 ## First run
 
@@ -105,14 +104,7 @@ Build the frontend and start the local API/static server:
 ./start.sh
 ```
 
-Open `http://127.0.0.1:8000`. For separate development servers:
-
-```bash
-python -m uvicorn backend.main:app --reload --port 8000
-cd frontend && npm run dev
-```
-
-Vite proxies `/api` to `http://127.0.0.1:8000` during development.
+Open `http://127.0.0.1:8000`.
 
 ## Docker
 
@@ -122,16 +114,6 @@ docker compose up --build
 ```
 
 The service binds to `127.0.0.1:8000`, runs as a non-root container user, and persists `data/workspace/` on the host.
-
-## Development checks
-
-```bash
-python -m ruff check backend tests
-python -m pytest
-cd frontend && npm run lint && npm run build
-```
-
-Source files are kept below 250 lines. Chinese comments explain design constraints while identifiers remain in English for cross-language collaboration.
 
 ## Documentation and limitations
 
