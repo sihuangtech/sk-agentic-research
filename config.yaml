@@ -1,13 +1,46 @@
-# 预设研究方向（Ideation Agent 的起点，同时也鼓励自由探索其他方向）
-research_directions:
-  - "Reinforcement Learning from Verifiable Rewards (RLVR)"
-  - "LLM reasoning and chain-of-thought"
-  - "AI agents and tool use"
-  # 可继续添加更多方向
+# 所有运行产物都保存在本地工作区。
+workspace_dir: data/workspace
 
-max_concurrent_pipelines: 3       # 最大并发假设数（跨假设并发）
-llm_model: "gpt-4o"               # 默认使用的 LLM
-max_ideas_per_cycle: 5            # 每轮构思的假设数量
-hypothesis_review_threshold: 6   # 假设自动评审分数门槛（1-10分），低于此分数不进入流水线
-experiment_timeout_minutes: 60   # 单个实验超时时间
-auto_commit: true                 # 是否自动 commit
+research_directions:
+  - Reinforcement Learning from Verifiable Rewards
+  - LLM reasoning and tool use
+
+llm:
+  provider: openai
+  model: gpt-4o-mini
+  # 建议使用不同模型做假设评审，留空时与生成模型相同。
+  reviewer_provider:
+  reviewer_model:
+  max_tokens: 6000
+
+search:
+  providers:
+    - arxiv
+    - semantic_scholar
+  results_per_provider: 5
+  request_timeout_seconds: 20
+
+experiment:
+  executor: local
+  timeout_minutes: 30
+  train_seeds: [11, 23, 37]
+  # 留出种子不得与开发种子重叠。
+  validation_seeds: [101, 211, 307]
+  max_iterations: 2
+  minimum_success_rate: 1.0
+  maximum_coefficient_of_variation: 0.15
+
+security:
+  # 本地执行器无法提供容器级网络隔离；false 时会静态阻止常见网络模块。
+  allow_network: false
+  max_memory_mb: 4096
+  max_output_kb: 1024
+  blocked_modules: [subprocess, socket, httpx, requests, urllib]
+
+workflow:
+  max_concurrent_pipelines: 1
+  max_ideas_per_cycle: 3
+  hypothesis_review_threshold: 7.0
+  daemon_interval_minutes: 60
+  # 默认先审核实验计划，防止模型生成代码后立即执行。
+  human_review_before_execution: true

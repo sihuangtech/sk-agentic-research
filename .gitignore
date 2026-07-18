@@ -218,20 +218,23 @@ Thumbs.db
 # JavaScript dependencies and build output
 frontend/node_modules/
 frontend/dist/
-backend/static/
 
 # Local runtime files
 system.log
 .env.*
 !.env.example
 
+# Research runs are local audit artifacts, not source code.
+data/workspace/*
+!data/workspace/.gitkeep
+
 # LaTeX compiler intermediates (generated papers and source remain versioned)
-src/workspace/latex/**/*.aux
-src/workspace/latex/**/*.bbl
-src/workspace/latex/**/*.blg
-src/workspace/latex/**/*.fdb_latexmk
-src/workspace/latex/**/*.fls
-src/workspace/latex/**/*.log
-src/workspace/latex/**/*.out
-src/workspace/latex/**/*.synctex.gz
-src/workspace/latex/**/*.toc
+data/workspace/latex/**/*.aux
+data/workspace/latex/**/*.bbl
+data/workspace/latex/**/*.blg
+data/workspace/latex/**/*.fdb_latexmk
+data/workspace/latex/**/*.fls
+data/workspace/latex/**/*.log
+data/workspace/latex/**/*.out
+data/workspace/latex/**/*.synctex.gz
+data/workspace/latex/**/*.toc

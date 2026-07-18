@@ -1,22 +1,27 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# 设置错误即停止
-set -e
+set -euo pipefail
 
-echo "--- 正在构建前端 ---"
-cd frontend
-npm install
-npm run build
+PROJECT_PYTHON="${PAPERMILL_PYTHON:-.venv/bin/python}"
 
-echo "--- 正在准备静态文件 ---"
-cd ..
+if [[ ! -x "$PROJECT_PYTHON" ]]; then
+  echo "未找到项目 Python。请先执行 README 中的 python -m venv 和 pip install 命令。" >&2
+  exit 1
+fi
+
+if [[ ! -d frontend/node_modules ]]; then
+  echo "未找到前端依赖。请先在 frontend 目录执行 npm ci。" >&2
+  exit 1
+fi
+
+(
+  cd frontend
+  npm run build
+)
+
 mkdir -p backend/static
-cp -r frontend/dist/* backend/static/
+# 静态目录只保留本次构建结果，避免旧哈希资源长期堆积。
+find backend/static -mindepth 1 -delete
+cp -R frontend/dist/. backend/static/
 
-echo "--- 启动 FastAPI 后端服务 ---"
-# 确保安装了所有依赖
-pip install -r requirements.txt
-
-# 启动服务
-cd backend
-uvicorn main:app --host 0.0.0.0 --port 8000
+exec "$PROJECT_PYTHON" -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
