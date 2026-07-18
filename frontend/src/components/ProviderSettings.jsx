@@ -36,7 +36,7 @@ function ProviderCard({ provider, onSaved }) {
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState(provider.base_url || '');
   const [modelId, setModelId] = useState(provider.model_id || '');
-  const [apiMode, setApiMode] = useState(provider.api_mode || 'chat_completions');
+  const [apiMode, setApiMode] = useState(provider.api_mode || 'responses');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -77,6 +77,7 @@ function ProviderCard({ provider, onSaved }) {
           <option value="chat_completions">传统兼容接口（Chat Completions）</option>
           <option value="responses">Responses API</option>
         </select>
+        <span className="block font-normal leading-5 text-slate-600">官方 GPT-5.6 推荐 Responses；仅支持 `/v1/chat/completions` 的中转站请选择传统兼容接口。</span>
       </label>}
       <label className="block space-y-2 text-xs font-bold text-slate-400">
         <span>API Key（留空则保留原值）</span>

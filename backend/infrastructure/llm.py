@@ -45,7 +45,7 @@ class ProviderLlmClient:
         if not key:
             raise RuntimeError("缺少 OPENAI_API_KEY")
         client = OpenAI(api_key=key, base_url=os.getenv("OPENAI_BASE_URL") or None)
-        if os.getenv("OPENAI_API_MODE", "chat_completions") == "responses":
+        if os.getenv("OPENAI_API_MODE", "responses") == "responses":
             response = client.responses.create(
                 model=self.model,
                 input=prompt,

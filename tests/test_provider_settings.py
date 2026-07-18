@@ -5,6 +5,17 @@ from backend.api.webapp import create_app
 from backend.core.provider_settings import PROVIDER_ENV, ProviderSettingsStore
 
 
+def test_current_official_defaults(tmp_path) -> None:
+    settings = {item["id"]: item for item in ProviderSettingsStore(tmp_path / ".env", {}).list_sanitized()}
+    assert settings["openai"]["model_id"] == "gpt-5.6-terra"
+    assert settings["openai"]["base_url"] == "https://api.openai.com/v1"
+    assert settings["openai"]["api_mode"] == "responses"
+    assert settings["anthropic"]["model_id"] == "claude-sonnet-5"
+    assert settings["anthropic"]["base_url"] == "https://api.anthropic.com"
+    assert settings["google"]["model_id"] == "gemini-3.5-flash"
+    assert settings["google"]["base_url"] == "https://generativelanguage.googleapis.com"
+
+
 def test_all_providers_persist_keys_and_custom_base_urls(tmp_path) -> None:
     environment = {}
     store = ProviderSettingsStore(tmp_path / ".env", environment)

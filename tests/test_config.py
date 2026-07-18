@@ -9,6 +9,7 @@ def test_default_config_is_valid() -> None:
     assert config.experiment.train_seeds
     assert set(config.experiment.train_seeds).isdisjoint(config.experiment.validation_seeds)
     assert config.workflow.human_review_before_execution is True
+    assert config.llm.model == "gpt-5.6-terra"
 
 
 def test_held_out_seeds_cannot_overlap() -> None:

@@ -68,6 +68,8 @@ cp .env.example .env
 
 OpenAI, Anthropic Claude, and Google Gemini each support a Base URL, model ID, and API key through the Web settings page or their provider-prefixed environment variables. OpenAI can use either the traditional Chat Completions-compatible interface or the Responses API. Keys are stored only in the Git-ignored local `.env` and are never returned by the API.
 
+The defaults are `gpt-5.6-terra` through the Responses API, `claude-sonnet-5`, and `gemini-3.5-flash`. For a third-party compatibility gateway, use only model IDs and API modes exposed by that gateway.
+
 An editable setuptools installation may generate `local_ai_papermill.egg-info`. It is ignored package metadata, not a source or deployment directory.
 
 ## First run

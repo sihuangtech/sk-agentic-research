@@ -7,7 +7,7 @@ research_directions:
 
 llm:
   provider: openai
-  model: gpt-4o-mini
+  model: gpt-5.6-terra
   # 建议使用不同模型做假设评审，留空时与生成模型相同。
   reviewer_provider:
   reviewer_model:

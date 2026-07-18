@@ -16,7 +16,7 @@ class StrictConfigModel(BaseModel):
 
 class LlmSettings(StrictConfigModel):
     provider: Literal["openai", "anthropic", "google"] = "openai"
-    model: str = "gpt-4o-mini"
+    model: str = "gpt-5.6-terra"
     reviewer_provider: Literal["openai", "anthropic", "google"] | None = None
     reviewer_model: str | None = None
     max_tokens: int = Field(default=6000, ge=256, le=32000)
