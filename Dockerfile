@@ -1,29 +1,34 @@
-# 使用 Python 3.10 作为基础镜像
-FROM python:3.10-slim
+FROM node:22-bookworm-slim AS frontend-builder
 
-# 安装 Node.js 用于构建前端
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    texlive-full \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
+WORKDIR /build/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    MPLCONFIGDIR=/tmp/matplotlib
 
 WORKDIR /app
 
-# 复制项目文件
-COPY . .
+COPY pyproject.toml README.md ./
+COPY backend/ ./backend/
+COPY config.yaml prompts.yaml ./
+RUN python -m pip install --no-cache-dir .
 
-# 构建前端
-RUN cd frontend && npm install && npm run build
-RUN mkdir -p backend/static && cp -r frontend/dist/* backend/static/
+COPY --from=frontend-builder /build/frontend/dist/ ./backend/static/
 
-# 安装 Python 依赖
-RUN pip install --no-cache-dir -r requirements.txt
+RUN useradd --create-home --uid 10001 papermill \
+    && mkdir -p /app/data/workspace \
+    && chown -R papermill:papermill /app/data/workspace
 
-# 暴露端口
+USER papermill
 EXPOSE 8000
 
-# 启动脚本
-CMD ["python3", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/system/status', timeout=3)"
+
+CMD ["python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

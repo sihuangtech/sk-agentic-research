@@ -1,71 +1,77 @@
 ideation:
-  generate_ideas: |
-    你是一个资深 AI 研究员。基于以下研究方向和相关文献，提出 {max_ideas} 个具体且具有创新性的研究假设。
-    研究方向: {direction}
-    相关文献与项目:
-    {context}
+  generate_hypotheses: |
+    你是严谨的科研假设设计者。研究方向：{direction}
+    下面是带固定 id 和 URL 的证据快照：
+    {evidence}
 
-    每个假设必须包含：
-    1. 问题陈述 (Problem Statement)
-    2. 核心假设 (Core Hypothesis)
-    3. 预期验证方式 (Proposed Verification)
-    4. 创新点 (Novelty)
+    最多提出 {max_ideas} 个可执行、可证伪的假设。只能引用给定 evidence id，
+    不得把代码仓库热度当作科学证据，不得承诺尚未运行的结果。
+    只输出 JSON 数组，每项必须包含：
+    title, problem, hypothesis, falsification_criteria,
+    independent_variable, dependent_variables(数组), baselines(数组),
+    expected_outcome, novelty, evidence_ids(数组)。
 
-    请以 JSON 格式输出一个列表，每个元素包含上述四个字段，并增加一个 "title" 字段。
-  review_idea: |
-    评估以下研究假设的新颖性和可行性，打分范围 1-10 分。
-    标题: {title}
-    问题陈述: {problem_statement}
-    核心假设: {core_hypothesis}
-    预期验证方式: {proposed_verification}
-
-    请只输出一个整数分数。
+  review_hypothesis: |
+    你是独立科研审稿人。按 1-10 分评价以下假设，不得因为语言流畅而加分。
+    假设：{hypothesis}
+    可用证据 id：{evidence_ids}
+    只输出 JSON：
+    {{"novelty":整数,"feasibility":整数,"falsifiability":整数,
+    "evidence_support":整数,"rationale":"简明理由"}}
 
 planning:
-  plan_experiment: |
-    你是一个资深 AI 研究员。基于以下研究假设，制定一个详细的实验计划，并编写 Python 实验代码。
+  design_experiment: |
+    你是实验设计工程师。请把假设转换成一组基线与候选实验。
+    假设：{hypothesis}
+    证据：{evidence}
+    开发种子：{train_seeds}
+    留出种子：{validation_seeds}
 
-    研究假设:
-    {idea_content}
+    约束：
+    1. 基线和候选必须使用相同数据、指标与种子；禁止伪造或随机填写结果。
+    2. 两个 Python 文件都从 PAPERMILL_SEED 读取种子，从 PAPERMILL_OUTPUT 读取输出路径。
+    3. 输出 JSON 必须包含同一个数值指标路径；代码不得联网、启动子进程或安装依赖。
+       只能使用 Python 标准库和当前核心环境；非标准库顶级模块必须写入 required_modules。
+    4. 每个代码文件不得超过 250 行。
+    5. minimum_delta 必须在实验前明确，不能看结果后调整。
 
-    任务要求:
-    1. 输出一份实验计划 (Markdown 格式)，包含：数据集选择、模型架构、baseline 方法、评估指标、实验步骤。
-    2. 编写一个完整的 Python 脚本 `experiment.py`，用于执行实验。脚本应包含数据加载、模型定义、训练/推理循环、评估，并将结果保存为 `results.json`。
-    3. 脚本应易于通过命令行运行。
-
-    请以以下格式输出：
-    ===PLAN===
-    [实验计划内容]
-    ===CODE===
-    [实验代码内容]
+    只输出一个 JSON 对象：
+    {{
+      "plan_markdown":"完整实验计划",
+      "manifest":{{
+        "objective":"...",
+        "metric":{{"name":"...","json_path":"metrics.score",
+          "direction":"maximize或minimize","minimum_delta":0.0}},
+        "baseline":{{"parameters":{{}}}},
+        "candidate":{{"parameters":{{}}}},
+        "required_modules":[],
+        "expected_result_schema":{{"metrics.score":"number"}}
+      }},
+      "baseline_code":"完整 Python 代码",
+      "candidate_code":"完整 Python 代码"
+    }}
 
 experiment:
-  debug_code: |
-    以下 Python 代码在执行时报错。请分析错误原因并提供修复后的完整代码。
-
-    报错信息:
-    {error_msg}
-
-    源代码:
-    {code}
-
-    请只输出修复后的完整 Python 代码，不要有任何解释。
+  improve_candidate: |
+    你只能修改候选方案，不能改基线、指标、门槛或种子。
+    当前是第 {iteration} 次有限迭代。
+    开发集报告：{report}
+    当前候选代码：{code}
+    修复真实错误或提出有理论理由的改进；不得硬编码指标或读取验证目录。
+    代码继续遵守 PAPERMILL_SEED/PAPERMILL_OUTPUT 协议且不超过 250 行。
+    只输出 JSON：{{"candidate_code":"完整 Python 代码"}}
 
 writing:
-  write_paper: |
-    你是一个资深 AI 研究员。基于以下研究假设和实验结果，撰写一篇短论文（LaTeX 格式）。
+  draft_paper: |
+    你是科研写作者，只能根据给定假设、证据与真实验证报告写作。
+    结论状态：{claim_status}
+    假设：{hypothesis}
+    证据：{evidence}
+    验证报告：{validation}
 
-    研究假设:
-    {idea_content}
-
-    实验结果:
-    {results_data}
-
-    要求:
-    1. 论文聚焦单一假设，诚实报告结果（无论正负）。
-    2. 包含：摘要、假设说明、方法、实验结果、结论。
-    3. 如果目录下有图片（plot.png），请在 LaTeX 中引用。
-    4. 使用标准 article 类。
-    5. 只输出 LaTeX 代码。
-
-    请开始撰写：
+    不得创造论文、作者、DOI、实验次数或指标。引用只能使用给定 evidence id。
+    结果未通过时，标题、摘要和结论必须明确写成未证实、无效或不确定结果。
+    只输出 JSON：
+    {{"title":"...","abstract":"...","introduction":"...","methods":"...",
+    "results":"...","limitations":"...","conclusion":"...",
+    "cited_evidence_ids":["..."]}}

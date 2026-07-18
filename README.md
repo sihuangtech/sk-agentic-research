@@ -1,103 +1,141 @@
-# Papermill
+# Papermill: Local, Auditable AI Research Workflow
 
-Papermill is an autonomous AI research pipeline inspired by Fully Automated Research Systems (FARS). It coordinates specialized agents to move from literature discovery and hypothesis generation through experiment planning, execution, and paper drafting.
+Papermill connects evidence discovery, falsifiable hypotheses, experiment planning, real Python or Notebook execution, held-out validation, and research writing in a resumable local workflow. It treats generated claims as hypotheses to test, not as scientific results.
 
 [中文文档](README.zh.md)
 
-## What it does
+## Core guarantees
 
-The pipeline is designed around research hypotheses rather than document production. Each accepted hypothesis can be planned, tested, and documented as a concise LaTeX paper, whether the experimental outcome is positive or negative.
+- Typed contracts for evidence, hypotheses, experiment manifests, trials, and validation reports.
+- Atomic run state and an append-only event timeline for recovery and audit.
+- Baseline/candidate comparisons on identical metrics and seed schedules.
+- Separate development and held-out seeds; only held-out results determine the final decision.
+- Explicit `accepted`, `rejected`, `inconclusive`, and `invalid` outcomes.
+- Bounded candidate iteration instead of unbounded benchmark searching.
+- Static code checks, secret-stripped environments, time/memory/output limits, and no shell execution.
+- Real Papermill execution for parameterized Jupyter notebooks.
+- Human approval before generated code runs by default.
+- Citation allowlists and mandatory negative-result labels in generated reports.
 
-The system is composed of four agents that communicate through a shared workspace:
+## Workflow
 
-1. **Ideation agent** (`src/agents/ideation_agent.py`) searches research sources and proposes hypotheses. It supports arXiv, Semantic Scholar, Google Scholar, GitHub, and Hugging Face, and uses an internal review score to filter ideas.
-2. **Planning agent** (`src/agents/planning_agent.py`) turns an idea into an experiment plan and a Python experiment scaffold.
-3. **Experiment agent** (`src/agents/experiment_agent.py`) runs generated experiments, captures JSON results, and can ask the LLM to repair a failed experiment up to three times.
-4. **Writing agent** (`src/agents/writing_agent.py`) creates charts, drafts a LaTeX paper, and compiles it with `pdflatex` when available.
-
-`src/orchestrator.py` coordinates concurrent pipelines. A FastAPI backend and React/Vite frontend provide a browser interface for viewing ideas, pipeline status, papers, logs, and configuration.
-
-## Requirements
-
-- Python 3.9 or later
-- Node.js 18 or later (only required for the web frontend)
-- A LaTeX distribution with `pdflatex` (required to compile PDF papers)
-- At least one configured LLM provider key
-
-## Quick start
-
-1. Create a local environment file and add the keys for the providers you intend to use:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-2. Create and activate a Python virtual environment, then install backend dependencies:
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
-
-3. Review `config.yaml` and set the research directions, model name, concurrency, and time limits.
-
-4. Run the autonomous pipeline:
-
-   ```bash
-   python -m src.orchestrator
-   ```
-
-## Web application
-
-Build the frontend and copy the generated assets to the backend static directory:
-
-```bash
-cd frontend
-npm install
-npm run build
-cd ..
-mkdir -p backend/static
-cp -r frontend/dist/* backend/static/
+```text
+Research direction
+  -> multi-source evidence retrieval and deduplication
+  -> falsifiable hypothesis and structured review
+  -> baseline/candidate experiment plan
+  -> human approval by default
+  -> bounded iteration on development seeds
+  -> independent held-out validation
+  -> accepted / rejected / inconclusive / invalid
+  -> Markdown / LaTeX / optional PDF report
 ```
-
-Then start the API server from the repository root:
-
-```bash
-uvicorn backend.main:app --host 0.0.0.0 --port 8000
-```
-
-Alternatively, `./start.sh` builds the frontend, installs Python dependencies, and starts the backend. Docker users can build and run the bundled `Dockerfile` or use `docker-compose.yml`.
 
 ## Project layout
 
+There are only two deployable application boundaries:
+
 ```text
-backend/                 FastAPI application and static web assets
-frontend/                React/Vite web application
-src/
-├── agents/              LLM integration and research pipeline agents
-├── workspace/           Persistent research artifacts
-│   ├── ideas/           Generated hypotheses
-│   ├── memory/          Processed-paper memory
-│   ├── experiments/     Generated experiment plans and code
-│   ├── results/         Experiment result data
-│   ├── references/      Downloaded references
-│   └── latex/           Generated LaTeX source and compiled papers
-└── orchestrator.py      Pipeline coordinator
-config.yaml              Runtime configuration
-prompts.yaml             Agent prompt templates
+backend/                 FastAPI, CLI, research domain, execution and workflow
+├── api/                 HTTP routes, dependencies and process management
+├── core/                Configuration, atomic storage and run repository
+├── domain/              Typed research contracts
+├── infrastructure/      LLM, search, code policy and executors
+├── research/            Literature, hypotheses, planning, validation and writing
+└── workflow/            Resumable workflow engine and dependency assembly
+frontend/                React/Vite web console
+data/workspace/          Local runtime artifacts; not an application package
+tests/                   Unit and real offline execution tests
+docs/                    Architecture, protocol and security documentation
 ```
 
-## Configuration and credentials
+## Install
 
-`config.yaml` controls the research directions, selected model, hypothesis review threshold, concurrent pipelines, experiment timeout, and automatic commits. API keys and service tokens belong only in `.env`; use `.env.example` as the template and never commit real credentials.
+Python 3.10+ and Node.js 20+ are required. Install dependencies only through the official package-manager commands:
 
-## Notes
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e '.[dev]'
 
-- Generated workspace artifacts are intentionally kept available for review and optional automatic Git commits.
-- The LaTeX writer attempts to install `texlive-full` if `pdflatex` is unavailable. In local or production environments, install and manage TeX dependencies explicitly instead.
+cd frontend
+npm ci
+cd ..
 
-## Star History
+cp .env.example .env
+```
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sihuangtech/papermill&type=Date)](https://star-history.com/#sihuangtech/papermill&Date)
+OpenAI, Anthropic Claude, and Google Gemini each support a Base URL, model ID, and API key through the Web settings page or their provider-prefixed environment variables. OpenAI can use either the traditional Chat Completions-compatible interface or the Responses API. Keys are stored only in the Git-ignored local `.env` and are never returned by the API.
+
+An editable setuptools installation may generate `local_ai_papermill.egg-info`. It is ignored package metadata, not a source or deployment directory.
+
+## First run
+
+Run diagnostics and the real-process offline demo before configuring an external model:
+
+```bash
+python -m backend.cli doctor
+python -m backend.cli demo
+python -m pytest
+```
+
+The demo launches 12 isolated child processes and stores its auditable artifacts under `data/workspace/runs/`.
+
+## Research commands
+
+```bash
+python -m backend.cli run --direction "Reliable few-shot medical image segmentation" --max-ideas 2
+python -m backend.cli status
+python -m backend.cli approve <run_id>
+python -m backend.cli resume <run_id>
+python -m backend.cli cancel <run_id>
+python -m backend.cli daemon
+```
+
+With the default configuration, a new run pauses at `waiting_review` before generated experiment code executes.
+
+## Web console
+
+Build the frontend and start the local API/static server:
+
+```bash
+./start.sh
+```
+
+Open `http://127.0.0.1:8000`. For separate development servers:
+
+```bash
+python -m uvicorn backend.main:app --reload --port 8000
+cd frontend && npm run dev
+```
+
+Vite proxies `/api` to `http://127.0.0.1:8000` during development.
+
+## Docker
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+The service binds to `127.0.0.1:8000`, runs as a non-root container user, and persists `data/workspace/` on the host.
+
+## Development checks
+
+```bash
+python -m ruff check backend tests
+python -m pytest
+cd frontend && npm run lint && npm run build
+```
+
+Source files are kept below 250 lines. Chinese comments explain design constraints while identifiers remain in English for cross-language collaboration.
+
+## Documentation and limitations
+
+- [Chinese architecture guide](docs/architecture.zh.md)
+- [Research protocol](docs/research-protocol.zh.md)
+- [Security boundaries](docs/security.zh.md)
+- [Frontend guide](frontend/README.md)
+
+Static checks and local resource monitoring are defense-in-depth controls, not a strong sandbox. Run untrusted generated experiments inside a dedicated container or VM, and require domain review before treating output as scientific evidence.

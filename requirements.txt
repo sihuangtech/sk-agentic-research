@@ -1,22 +1,2 @@
-arxiv
-requests
-scholarly
-huggingface_hub
-PyGithub
-openai
-anthropic
-google-generativeai
-pyyaml
-matplotlib
-pandas
-numpy
-scikit-learn
-torch
-pylatex
-subprocess32
-python-dotenv
-fastapi
-uvicorn[standard]
-python-multipart
-sse-starlette
-psutil
+# 兼容传统安装方式；依赖的唯一声明源是 pyproject.toml。
+-e .

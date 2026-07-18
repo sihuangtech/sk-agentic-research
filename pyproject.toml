@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-ai-papermill"
+version = "0.2.0"
+description = "A local, auditable AI research workflow with held-out experiment validation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "GPL-3.0-only"
+authors = [{name = "Papermill Contributors"}]
+dependencies = [
+  "anthropic>=0.40",
+  "arxiv>=2.1",
+  "fastapi>=0.115",
+  "google-genai>=1.0",
+  "ipykernel>=6.29",
+  "matplotlib>=3.8",
+  "openai>=1.60",
+  "papermill>=2.6",
+  "psutil>=6.0",
+  "pydantic>=2.10",
+  "python-dotenv>=1.0",
+  "PyYAML>=6.0",
+  "requests>=2.32",
+  "sse-starlette>=2.1",
+  "uvicorn[standard]>=0.34",
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.28",
+  "pytest>=8.3",
+  "pytest-cov>=6.0",
+  "ruff>=0.9",
+]
+
+[project.scripts]
+ai-papermill = "backend.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["backend*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]

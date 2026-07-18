@@ -1,18 +1,11 @@
-version: '3.8'
-
 services:
   app:
     build: .
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
-      - ./src/workspace:/app/src/workspace
+      - ./data/workspace:/app/data/workspace
       - ./config.yaml:/app/config.yaml
-      - ./system.log:/app/system.log
     env_file:
       - .env
-    restart: always
-
-# 数据卷持久化
-volumes:
-  workspace_data:
+    restart: unless-stopped
