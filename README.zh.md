@@ -63,6 +63,10 @@ cp .env.example .env
 
 支持 OpenAI、Anthropic Claude 和 Google Gemini。三者都可以在 Web 设置页依次填写 Base URL、模型 ID 和 API Key；OpenAI 还能选择传统 Chat Completions 兼容接口或 Responses API。配置写入对应的 `OPENAI_*`、`ANTHROPIC_*`、`GOOGLE_*` 环境变量，密钥不会由接口返回。
 
+默认模型为 `gpt-5.6-terra`（Responses API）、`claude-sonnet-5` 和 `gemini-3.5-flash`。使用第三方兼容网关时，应以该网关实际开放的模型 ID 和接口模式为准。
+
+`OPENAI_API_MODE` 仅接受 `responses`（调用 `/v1/responses`，默认）或 `chat_completions`（调用 `/v1/chat/completions`）。如果中转服务只声明“OpenAI 兼容”但没有实现 Responses API，应选择 `chat_completions`。
+
 可编辑安装可能生成 `local_ai_papermill.egg-info`。它是已被 Git 忽略的 setuptools 安装元数据，不是源码目录或第三个部署单元。
 
 ## 第一次运行

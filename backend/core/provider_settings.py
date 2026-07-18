@@ -13,23 +13,26 @@ PROVIDER_ENV = {
     "openai": {
         "label": "OpenAI / OpenAI 兼容",
         "base_url": "OPENAI_BASE_URL",
+        "default_base_url": "https://api.openai.com/v1",
         "model_id": "OPENAI_MODEL_ID",
         "api_key": "OPENAI_API_KEY",
-        "default_model": "gpt-4o-mini",
+        "default_model": "gpt-5.6-terra",
     },
     "anthropic": {
         "label": "Anthropic Claude",
         "base_url": "ANTHROPIC_BASE_URL",
+        "default_base_url": "https://api.anthropic.com",
         "model_id": "ANTHROPIC_MODEL_ID",
         "api_key": "ANTHROPIC_API_KEY",
-        "default_model": "claude-sonnet-4-5",
+        "default_model": "claude-sonnet-5",
     },
     "google": {
         "label": "Google Gemini",
         "base_url": "GOOGLE_BASE_URL",
+        "default_base_url": "https://generativelanguage.googleapis.com",
         "model_id": "GOOGLE_MODEL_ID",
         "api_key": "GOOGLE_API_KEY",
-        "default_model": "gemini-2.5-flash",
+        "default_model": "gemini-3.5-flash",
     },
 }
 
@@ -50,7 +53,7 @@ class ProviderSettingsStore:
         result = []
         for provider, spec in PROVIDER_ENV.items():
             api_key = self._value(spec["api_key"], values)
-            base_url = self._value(spec["base_url"], values)
+            base_url = self._value(spec["base_url"], values) or spec["default_base_url"]
             model_id = self._value(spec["model_id"], values) or spec["default_model"]
             result.append(
                 {
@@ -59,7 +62,7 @@ class ProviderSettingsStore:
                     "api_key_configured": bool(api_key),
                     "base_url": base_url,
                     "model_id": model_id,
-                    "api_mode": self._value("OPENAI_API_MODE", values) or "chat_completions"
+                    "api_mode": self._value("OPENAI_API_MODE", values) or "responses"
                     if provider == "openai"
                     else "",
                 }
@@ -83,7 +86,7 @@ class ProviderSettingsStore:
         if model_id and model_id.strip():
             self._set(spec["model_id"], model_id.strip())
         if provider == "openai":
-            mode = api_mode or "chat_completions"
+            mode = api_mode or "responses"
             if mode not in {"chat_completions", "responses"}:
                 raise ValueError("OpenAI 接口模式无效")
             self._set("OPENAI_API_MODE", mode)
