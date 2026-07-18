@@ -4,21 +4,37 @@ Papermill 将文献证据、可证伪假设、实验计划、真实代码/Notebo
 
 [English documentation](README.md)
 
-## 这次重构解决了什么
+## 你可以用它做什么
 
-旧版只是四个 Agent 串行调用：一个模型给自己的假设打分，生成一份脚本后直接在宿主机运行，找到 `results.json` 就写论文。新版增加了：
+### 1. 把研究方向变成可执行的研究计划
 
-- 结构化科研契约：证据、假设、实验清单、试验记录、验证报告都有 Pydantic 模型；
-- 可恢复状态机：每个阶段、事件、错误和产物都原子写入本地工作区；
-- 基线与候选分离：同一指标、同一开发种子，不能在看到结果后改门槛；
-- 留出验证：开发种子用于候选改进，独立验证种子只用于最终结论；
-- 结果门禁：成功率、最小改进量和变异系数共同决定 `accepted/rejected/inconclusive/invalid`；
-- 有限迭代：候选方案最多改进指定次数，不能无限搜索直到偶然得到好结果；
-- 受控执行：不经过 shell，剔除 API Key，限制超时、内存、日志长度并检查危险 Python 语法；
-- Notebook 执行：检查代码单元后调用官方 Papermill，保存执行后的 Notebook 和结果；
-- 人工审批：默认生成实验计划后暂停，批准后才执行模型生成代码；
-- 可信写作：引用只能来自证据快照，未通过验证时报告标题和结论会被强制标记；
-- 离线演示：无需网络或 API Key，实际运行 12 个子进程验证整条实验链。
+输入一个研究方向，例如“小样本医学影像分割的可靠性”。系统会检索并整理相关证据，提出可被实验推翻的假设，随后生成包含基线、候选方案、评价指标、随机种子和通过门槛的实验计划。计划生成后默认暂停，等你确认再执行。
+
+### 2. 让 AI 编写并运行实验，而不是只写结论
+
+获批后，系统会生成 Python 实验代码或带参数的 Jupyter Notebook，并在本地受控环境中运行。每次运行都会保存代码、输入参数、原始结果、日志、退出状态和耗时；Notebook 还会保存已执行版本，方便复现和检查。
+
+### 3. 用独立验证判断结果是否可靠
+
+系统将用于改进方案的开发种子与最终判断的留出种子分开。它比较基线和候选方案的成功率、最小提升量和波动情况，并给出 `accepted`（接受）、`rejected`（拒绝）、`inconclusive`（证据不足）或 `invalid`（结果无效）四种结论，避免把偶然跑通当成发现。
+
+### 4. 获得可追溯的研究报告
+
+运行完成后可生成 Markdown、LaTeX 和可选 PDF 报告。报告引用来自本次保存的证据快照，并附带实验结果和限制说明；验证未通过时会明确标注，不会包装成正面结论。
+
+### 5. 在本机管理全过程
+
+可通过命令行或 Web 控制台查看研究进度、实时日志、实验指标、假设、报告和待审批计划。中断的任务可以恢复，也可以取消；所有运行产物保存在本地 `data/workspace/`。
+
+### 6. 选择自己的大模型服务
+
+支持 OpenAI、Anthropic Claude 和 Google Gemini。每个服务都可单独配置 Base URL、模型 ID 和 API Key；OpenAI 可选择 Responses API 或传统 Chat Completions 兼容接口，因此也能接入提供相应接口的兼容网关。
+
+## 工作方式与边界
+
+- 每项实验都固定评价指标、门槛和随机种子，基线与候选方案在同一条件下比较；
+- 生成代码不会通过 shell 执行，运行时会移除 API Key，并限制超时、内存和日志；
+- 这是一套帮助设计、执行和审计研究的工具，不能自动证明实验设计正确、数据没有泄漏或结论具有统计显著性。高风险研究仍应由领域研究者复核。
 
 ## 工作流
 
@@ -67,8 +83,6 @@ cp .env.example .env
 
 `OPENAI_API_MODE` 仅接受 `responses`（调用 `/v1/responses`，默认）或 `chat_completions`（调用 `/v1/chat/completions`）。如果中转服务只声明“OpenAI 兼容”但没有实现 Responses API，应选择 `chat_completions`。
 
-可编辑安装可能生成 `local_ai_papermill.egg-info`。它是已被 Git 忽略的 setuptools 安装元数据，不是源码目录或第三个部署单元。
-
 ## 第一次运行
 
 先做不会访问模型和网络的环境诊断与真实实验演示：
@@ -115,13 +129,6 @@ python -m backend.cli daemon
 
 浏览器打开 `http://127.0.0.1:8000`。控制台提供运行状态、真实指标、假设、研究报告、实时日志、配置校验和人工审批。
 
-开发时可分别启动：
-
-```bash
-python -m uvicorn backend.main:app --reload --port 8000
-cd frontend && npm run dev
-```
-
 ## 实验代码协议
 
 Python 实验必须：
@@ -145,27 +152,6 @@ Notebook 使用带 `parameters` 标签的参数单元。执行器会注入 `seed
 
 这仍然不能自动证明实验设计科学、数据没有泄漏或结果具有统计显著性。高风险科研必须由领域研究者审核数据、方法和结论。
 
-## 目录结构
-
-```text
-backend/                 独立后端部署单元
-├── api/                 FastAPI 路由、依赖与进程管理
-├── core/                配置、原子存储、运行仓库
-├── domain/              领域模型与科研契约
-├── infrastructure/      LLM、检索、代码策略、执行器
-├── research/            文献、假设、规划、实验、验证、写作
-└── workflow/            可恢复工作流和依赖装配
-frontend/                独立前端部署单元
-└── src/
-    ├── api/             HTTP 客户端
-    ├── components/      可复用界面组件
-    ├── hooks/           SSE/状态 Hook
-    └── pages/           独立页面
-data/workspace/          本地运行数据，不属于源码包
-tests/                   单元测试与真实离线执行测试
-docs/                    架构、科研协议和安全文档
-```
-
 ## Docker
 
 ```bash
@@ -174,13 +160,3 @@ docker compose up --build
 ```
 
 服务只绑定本机 `127.0.0.1:8000`。容器以非 root 用户运行，工作区持久化到宿主机。Docker 镜像默认不包含 LaTeX；没有 `pdflatex` 时仍会生成 Markdown 和 `.tex`，不会在运行时自动安装系统软件。
-
-## 开发检查
-
-```bash
-python -m ruff check backend tests
-python -m pytest
-cd frontend && npm run lint && npm run build
-```
-
-项目源代码保持单文件不超过 250 行；中文注释解释设计理由，类型和函数名保持英文以便跨语言协作。
