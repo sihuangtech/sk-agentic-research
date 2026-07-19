@@ -3,7 +3,7 @@ requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "local-ai-papermill"
+name = "sk-agentic-research"
 version = "0.2.0"
 description = "A local, auditable AI research workflow with held-out experiment validation"
 readme = "README.md"
