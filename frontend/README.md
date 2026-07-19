@@ -1,6 +1,6 @@
-# Papermill Web 控制台
+# Agentic Research Web 控制台
 
-`frontend/` 是 Papermill 的独立前端部署单元，使用 React、Vite、React Router 和 Tailwind CSS。它只负责展示与交互，科研状态、实验执行和审计数据均由 `backend/` 提供。
+`frontend/` 是 Agentic Research 的独立前端部署单元，使用 React、Vite、React Router 和 Tailwind CSS。它只负责展示与交互，科研状态、实验执行和审计数据均由 `backend/` 提供。
 
 ## 功能页面
 

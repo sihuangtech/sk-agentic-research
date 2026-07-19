@@ -1,9 +1,9 @@
 {
   "app": {
-    "chineseName": "研文工坊",
-    "englishName": "Papermill",
+    "chineseName": "研序",
+    "englishName": "Agentic Research",
     "tagline": "Local Research Workspace",
-    "documentTitle": "Papermill | Local AI Research Workflow",
+    "documentTitle": "Agentic Research | Autonomous Research Agent",
     "safetyNotice": "Running generated code locally still carries risk. Use an isolated container for production experiments.",
     "language": "Interface language",
     "languageChinese": "中文",
@@ -18,7 +18,7 @@
   },
   "bootstrap": {
     "title": "Local research service failed to start",
-    "hint": "Quit and reopen Papermill. In development, inspect the sidecar logs in the Tauri terminal.",
+    "hint": "Quit and reopen Agentic Research. In development, inspect the sidecar logs in the Tauri terminal.",
     "unknownError": "An unknown error occurred"
   },
   "status": {

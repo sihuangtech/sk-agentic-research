@@ -37,7 +37,7 @@ fn backend_connection(state: State<'_, BackendState>) -> Result<BackendConnectio
         }
         thread::sleep(Duration::from_millis(150));
     }
-    Err("研文工坊（Papermill）本地后端未能在 30 秒内启动，请查看桌面应用日志".to_string())
+    Err("研序（Agentic Research）本地后端未能在 30 秒内启动，请查看桌面应用日志".to_string())
 }
 
 fn reserve_loopback_port() -> Result<(u16, SocketAddr), String> {
@@ -67,7 +67,7 @@ fn stop_backend(app_handle: &tauri::AppHandle) {
     if let Ok(mut guard) = state.child.lock() {
         if let Some(child) = guard.take() {
             if let Err(error) = child.kill() {
-                log::warn!("停止研文工坊 sidecar 失败: {error}");
+                log::warn!("停止研序 sidecar 失败: {error}");
             }
         }
     };
@@ -130,7 +130,7 @@ pub fn run() {
             Ok(())
         })
         .build(tauri::generate_context!())
-        .expect("error while building the Papermill desktop application");
+        .expect("error while building the Agentic Research desktop application");
 
     app.run(|app_handle, event| {
         if matches!(event, tauri::RunEvent::Exit) {

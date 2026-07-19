@@ -1,4 +1,4 @@
-# 研文工坊 Papermill Tauri 桌面架构
+# 研序（Agentic Research）Tauri 桌面架构
 
 ## 目标
 

@@ -70,7 +70,7 @@ def _write_embedded_kernel_spec(data_dir: Path) -> None:
             "-f",
             "{connection_file}",
         ],
-        "display_name": "Papermill Desktop Python",
+        "display_name": "Agentic Research Desktop Python",
         "language": "python",
     }
     (kernel_dir / "kernel.json").write_text(
@@ -80,7 +80,7 @@ def _write_embedded_kernel_spec(data_dir: Path) -> None:
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Papermill desktop sidecar")
+    parser = argparse.ArgumentParser(description="Agentic Research desktop sidecar")
     subparsers = parser.add_subparsers(dest="command", required=True)
     serve = subparsers.add_parser("serve")
     serve.add_argument("--host", default="127.0.0.1")

@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "研文工坊",
+  "productName": "研序",
   "version": "0.2.0",
   "identifier": "cn.skstudio.papermill",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "研文工坊 · Papermill",
+        "title": "研序 · Agentic Research",
         "width": 1280,
         "height": 800,
         "minWidth": 1024,

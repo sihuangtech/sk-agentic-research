@@ -1,4 +1,4 @@
-# Papermill 系统架构
+# Agentic Research 系统架构
 
 ## 设计目标
 
