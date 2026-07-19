@@ -1,4 +1,4 @@
-# Papermill：本地可审计 AI 科研工作流
+# 研文工坊 Papermill：本地可审计 AI 科研工作流
 
 Papermill 将文献证据、可证伪假设、实验计划、真实代码/Notebook 执行、留出验证和研究报告连接成一条可恢复的本地工作流。它不把“模型生成了一段实验结果”视为科研，也不会因为候选方案跑通一次就宣布假设成立。
 
@@ -24,7 +24,7 @@ Papermill 将文献证据、可证伪假设、实验计划、真实代码/Notebo
 
 ### 5. 在本机管理全过程
 
-可通过命令行或 Web 控制台查看研究进度、实时日志、实验指标、假设、报告和待审批计划。中断的任务可以恢复，也可以取消；所有运行产物保存在本地 `data/workspace/`。
+可通过桌面应用、命令行或 Web 控制台查看研究进度、实时日志、实验指标、假设、报告和待审批计划。桌面界面支持简体中文和英文，首次启动跟随系统语言，并记住用户手动选择。中断的任务可以恢复，也可以取消；桌面版将运行产物保存在应用的本地数据目录，Web/CLI 版仍使用项目内的 `data/workspace/`。
 
 ### 6. 选择自己的大模型服务
 
@@ -55,6 +55,7 @@ Papermill 将文献证据、可证伪假设、实验计划、真实代码/Notebo
 - [系统架构](docs/architecture.zh.md)
 - [科研与实验协议](docs/research-protocol.zh.md)
 - [安全边界](docs/security.zh.md)
+- [Tauri 桌面架构与打包](docs/desktop.zh.md)
 
 ## 安装
 
@@ -69,6 +70,13 @@ python -m pip install -e '.[dev]'
 cd frontend
 npm ci
 cd ..
+```
+
+只使用 Web/CLI 时，上述依赖已经足够。开发桌面版还需要安装 Rust stable 和 [Tauri 2 的系统依赖](https://v2.tauri.app/start/prerequisites/)，然后在项目根目录安装 Tauri 依赖：
+
+```bash
+npm install
+npm --prefix frontend install
 ```
 
 复制环境变量模板并填写至少一个模型密钥：
@@ -128,6 +136,32 @@ python -m backend.cli daemon
 ```
 
 浏览器打开 `http://127.0.0.1:8000`。控制台提供运行状态、真实指标、假设、研究报告、实时日志、配置校验和人工审批。
+
+## Tauri 桌面应用
+
+桌面版直接复用 `frontend/` 中的 React/Vite 前端，并将 FastAPI 后端打包成随应用启动的 Python sidecar；最终用户不需要另装 Python、Node.js 或手工启动 API 服务。
+
+开发运行：
+
+```bash
+npm run desktop:dev
+```
+
+生成当前操作系统的安装包：
+
+```bash
+npm run desktop:build
+```
+
+构建前会自动运行前端构建和 `scripts/build_desktop_sidecar.py`。sidecar 文件按 Tauri 要求生成在 `src-tauri/binaries/`，并带当前 Rust target triple；该二进制属于构建产物，不提交到 Git。
+
+桌面版特性：
+
+- Rust 主进程自动选择空闲回环端口并启动/回收 FastAPI sidecar；
+- 每次启动生成临时访问令牌，后端拒绝没有令牌的 `/api/v1` 请求；
+- `config.yaml`、`prompts.yaml`、`.env` 和 `data/workspace/` 位于系统应用数据目录，更新应用不会覆盖研究数据；
+- 浏览器 Web 模式保持兼容，仍可使用 `./start.sh`；
+- 当前实验执行仍是受限的本地子进程，不等同于 Docker/虚拟机级强隔离。运行不可信代码时仍应使用专用容器或虚拟机。
 
 ## 实验代码协议
 

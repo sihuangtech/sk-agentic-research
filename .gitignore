@@ -216,8 +216,14 @@ Thumbs.db
 !.vscode/extensions.json
 
 # JavaScript dependencies and build output
+node_modules/
 frontend/node_modules/
 frontend/dist/
+
+# Tauri and generated desktop sidecar artifacts
+src-tauri/target/
+src-tauri/binaries/*
+!src-tauri/binaries/.gitkeep
 
 # Local runtime files
 system.log

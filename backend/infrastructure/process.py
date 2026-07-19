@@ -70,7 +70,17 @@ class LocalProcessRunner:
         )
 
     def _sanitized_env(self, extra: dict[str, str]) -> dict[str, str]:
-        allowed = ("PATH", "LANG", "LC_ALL", "VIRTUAL_ENV", "SYSTEMROOT", "TMPDIR")
+        allowed = (
+            "PATH",
+            "LANG",
+            "LC_ALL",
+            "VIRTUAL_ENV",
+            "SYSTEMROOT",
+            "TMPDIR",
+            "JUPYTER_PATH",
+            "MPLBACKEND",
+            "MPLCONFIGDIR",
+        )
         env = {key: os.environ[key] for key in allowed if key in os.environ}
         env.update(extra)
         env["PYTHONUNBUFFERED"] = "1"
@@ -135,4 +145,24 @@ class LocalProcessRunner:
 
 
 def python_command(script_name: str) -> list[str]:
+    """返回可同时用于源码环境和 PyInstaller 桌面 sidecar 的 Python 命令。"""
+    if getattr(sys, "frozen", False):
+        return [sys.executable, "__run_python__", script_name]
     return [sys.executable, "-I", script_name]
+
+
+def python_module_command(
+    module: str,
+    *args: str,
+    isolated: bool = False,
+    unbuffered: bool = False,
+) -> list[str]:
+    """运行 Python 模块；冻结后复用 sidecar 内嵌解释器。"""
+    if getattr(sys, "frozen", False):
+        return [sys.executable, "__run_module__", module, *args]
+    flags = []
+    if isolated:
+        flags.append("-I")
+    if unbuffered:
+        flags.append("-u")
+    return [sys.executable, *flags, "-m", module, *args]

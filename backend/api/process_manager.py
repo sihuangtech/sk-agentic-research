@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import os
 import subprocess
-import sys
 import threading
 from pathlib import Path
 
 import psutil
+
+from backend.infrastructure.process import python_module_command
 
 
 class OrchestratorProcess:
@@ -33,7 +34,7 @@ class OrchestratorProcess:
                 return self.pid or 0
             self._log_handle = self.log_path.open("a", encoding="utf-8")
             self._process = subprocess.Popen(
-                [sys.executable, "-u", "-m", "backend.cli", "daemon"],
+                python_module_command("backend.cli", "daemon", unbuffered=True),
                 cwd=self.project_dir,
                 stdout=self._log_handle,
                 stderr=subprocess.STDOUT,
