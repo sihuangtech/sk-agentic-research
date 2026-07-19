@@ -7,11 +7,13 @@ import RunCard from '../components/RunCard';
 import StatusBadge from '../components/StatusBadge';
 import useRunStream from '../hooks/useRunStream';
 
+type DoctorCheck = { ok?: boolean; optional?: boolean };
+
 export default function DashboardPage() {
   const { t } = useTranslation();
   const { runs, error: streamError } = useRunStream();
   const [system, setSystem] = useState({ status: 'stopped' });
-  const [doctor, setDoctor] = useState({});
+  const [doctor, setDoctor] = useState<Record<string, DoctorCheck>>({});
   const [direction, setDirection] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);

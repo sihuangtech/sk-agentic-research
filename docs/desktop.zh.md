@@ -25,10 +25,11 @@ PyInstaller FastAPI sidecar
 
 ## 目录职责
 
-- `frontend/`：原有 React/Vite 前端，Web 与桌面共同使用；
+- `frontend/`：以 TypeScript/TSX 维护的 React/Vite 前端，Web 与桌面共同使用；
 - `frontend/src/i18n/`：基于 i18next/react-i18next 的中英文资源，首次启动跟随系统语言并在本机保存用户选择；
+- `frontend/src/theme.js`：外观偏好支持跟随系统、浅色和深色三档，并保存在本机；
 - `src-tauri/`：Tauri 2 配置、Rust 生命周期代码、权限与图标；
-- `assets/brand/`：研文工坊品牌源图与透明应用图标，平台图标由 Tauri CLI 统一生成；
+- `assets/brand/`：研序（Agentic Research）品牌源图与透明应用图标，平台图标由 Tauri CLI 统一生成；
 - `backend/desktop.py`：桌面 sidecar 入口及冻结后的 Python 执行桥；
 - `scripts/build_desktop_sidecar.py`：使用 PyInstaller 生成 Tauri target-triple sidecar；
 - `scripts/run-python.mjs`：在 macOS/Linux 与 Windows 上选择项目虚拟环境中的 Python；

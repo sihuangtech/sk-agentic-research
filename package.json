@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node scripts/run-python.mjs -m pytest && node scripts/run-python.mjs -m ruff check backend tests scripts/build_desktop_sidecar.py && node scripts/check-i18n.mjs && npm --prefix frontend run lint",
+    "test": "node scripts/run-python.mjs -m pytest && node scripts/run-python.mjs -m ruff check backend tests scripts/build_desktop_sidecar.py && node scripts/check-i18n.mjs && npm --prefix frontend run typecheck && npm --prefix frontend run lint",
     "tauri": "tauri",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build",

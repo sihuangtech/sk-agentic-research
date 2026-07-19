@@ -21,9 +21,9 @@ src/
 ├── components/      页面框架、状态徽标和运行卡片
 ├── hooks/           运行状态 SSE 数据流
 ├── pages/           总览、假设、报告、日志和设置页面
-├── App.jsx          页面路由
+├── App.tsx          页面路由
 ├── index.css        全局样式与设计变量
-└── main.jsx         React 入口
+└── main.tsx         React 入口
 ```
 
 ## 安装与开发
