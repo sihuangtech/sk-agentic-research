@@ -13,7 +13,7 @@ import yaml
 
 from backend.domain.models import ExperimentArm, TrialResult
 from backend.infrastructure.code_policy import PythonCodePolicy
-from backend.infrastructure.process import LocalProcessRunner, python_command
+from backend.infrastructure.process import LocalProcessRunner, python_command, python_module_command
 
 
 class ExperimentExecutor:
@@ -92,10 +92,10 @@ class ExperimentExecutor:
         parameters = {**arm.parameters, "seed": seed, "results_path": str(trial_dir / "results.json")}
         params_path.write_text(yaml.safe_dump(parameters, allow_unicode=True), encoding="utf-8")
         kernel_name = notebook.metadata.get("kernelspec", {}).get("name", "python3")
+        if getattr(sys, "frozen", False):
+            kernel_name = "papermill-desktop"
         language = notebook.metadata.get("language_info", {}).get("name", "python")
-        return [
-            sys.executable,
-            "-m",
+        return python_module_command(
             "papermill",
             input_path.name,
             output_path.name,
@@ -105,7 +105,7 @@ class ExperimentExecutor:
             kernel_name,
             "--language",
             language,
-        ]
+        )
 
     @staticmethod
     def _blocked(arm: ExperimentArm, seed: int, phase: str, error: str) -> TrialResult:

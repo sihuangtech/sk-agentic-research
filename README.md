@@ -1,4 +1,4 @@
-# Papermill: Local, Auditable AI Research Workflow
+# 研文工坊 Papermill: Local, Auditable AI Research Workflow
 
 Papermill connects evidence discovery, falsifiable hypotheses, experiment planning, real Python or Notebook execution, held-out validation, and research writing in a resumable local workflow. It treats generated claims as hypotheses to test, not as scientific results.
 
@@ -24,7 +24,7 @@ Completed runs can produce Markdown, LaTeX, and optional PDF reports. Citations 
 
 ### Manage the workflow locally
 
-Use the CLI or Web console to see progress, live logs, metrics, hypotheses, reports, and approval requests. Interrupted runs can be resumed or cancelled. Runtime artifacts stay in the local `data/workspace/` directory.
+Use the Tauri desktop app, CLI, or Web console to see progress, live logs, metrics, hypotheses, reports, and approval requests. Interrupted runs can be resumed or cancelled. The desktop UI supports Simplified Chinese and English, follows the OS language on first launch, and remembers the user's explicit choice. Desktop data stays in the OS application-data directory; Web/CLI artifacts remain under `data/workspace/`.
 
 ### Use your own model provider
 
@@ -67,6 +67,13 @@ cd ..
 cp .env.example .env
 ```
 
+Desktop development additionally requires Rust stable and the [Tauri 2 system prerequisites](https://v2.tauri.app/start/prerequisites/):
+
+```bash
+npm install
+npm --prefix frontend install
+```
+
 OpenAI, Anthropic Claude, and Google Gemini each support a Base URL, model ID, and API key through the Web settings page or their provider-prefixed environment variables. OpenAI can use either the traditional Chat Completions-compatible interface or the Responses API. Keys are stored only in the Git-ignored local `.env` and are never returned by the API.
 
 The defaults are `gpt-5.6-terra` through the Responses API, `claude-sonnet-5`, and `gemini-3.5-flash`. For a third-party compatibility gateway, use only model IDs and API modes exposed by that gateway.
@@ -106,6 +113,17 @@ Build the frontend and start the local API/static server:
 
 Open `http://127.0.0.1:8000`.
 
+## Tauri desktop app
+
+The desktop app reuses the existing React/Vite frontend and bundles FastAPI as a Python sidecar, so end users do not need to install Python or Node.js.
+
+```bash
+npm run desktop:dev
+npm run desktop:build
+```
+
+The build scripts generate the target-triple sidecar automatically. The Rust host chooses an unused loopback port, creates an ephemeral API token, starts the backend, and terminates it when the app exits. Desktop configuration and research artifacts live in the OS application-data directory. See the [Chinese desktop architecture guide](docs/desktop.zh.md) for details.
+
 ## Docker
 
 ```bash
@@ -121,5 +139,6 @@ The service binds to `127.0.0.1:8000`, runs as a non-root container user, and pe
 - [Research protocol](docs/research-protocol.zh.md)
 - [Security boundaries](docs/security.zh.md)
 - [Frontend guide](frontend/README.md)
+- [Tauri desktop architecture](docs/desktop.zh.md)
 
 Static checks and local resource monitoring are defense-in-depth controls, not a strong sandbox. Run untrusted generated experiments inside a dedicated container or VM, and require domain review before treating output as scientific evidence.

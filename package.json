@@ -1,0 +1,36 @@
+{
+  "name": "papermill",
+  "version": "0.2.0",
+  "description": "研文工坊 Papermill - local-first, auditable AI research workflow desktop application",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node scripts/run-python.mjs -m pytest && node scripts/run-python.mjs -m ruff check backend tests scripts/build_desktop_sidecar.py && node scripts/check-i18n.mjs && npm --prefix frontend run lint",
+    "tauri": "tauri",
+    "desktop:dev": "tauri dev",
+    "desktop:build": "tauri build",
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "desktop:sidecar": "node scripts/run-python.mjs scripts/build_desktop_sidecar.py",
+    "desktop:before-dev": "npm run desktop:sidecar && npm run frontend:dev",
+    "desktop:prepare": "npm run frontend:build && npm run desktop:sidecar"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sihuangtech/papermill.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/sihuangtech/papermill/issues"
+  },
+  "homepage": "https://github.com/sihuangtech/papermill#readme",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4"
+  },
+  "private": true
+}

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { api } from '../api/client';
+import { useTranslation } from 'react-i18next';
+import { api, apiUrl } from '../api/client';
 
 export default function useRunStream() {
+  const { t } = useTranslation();
   const [runs, setRuns] = useState([]);
   const [error, setError] = useState('');
 
@@ -10,13 +12,13 @@ export default function useRunStream() {
     api.get('/runs')
       .then(({ data }) => active && setRuns(Array.isArray(data) ? data : []))
       .catch((reason) => active && setError(reason.message));
-    const stream = new EventSource('/api/v1/pipelines/stream');
+    const stream = new EventSource(apiUrl('/pipelines/stream'));
     stream.onmessage = (event) => {
-      try { setRuns(JSON.parse(event.data)); } catch { setError('运行状态数据解析失败'); }
+      try { setRuns(JSON.parse(event.data)); } catch { setError(t('stream.parseFailed')); }
     };
-    stream.onerror = () => setError('实时状态连接已断开，页面仍可手动刷新');
+    stream.onerror = () => setError(t('stream.disconnected'));
     return () => { active = false; stream.close(); };
-  }, []);
+  }, [t]);
 
   return { runs, setRuns, error };
 }

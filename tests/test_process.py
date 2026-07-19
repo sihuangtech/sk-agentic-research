@@ -1,6 +1,6 @@
 import sys
 
-from backend.infrastructure.process import LocalProcessRunner
+from backend.infrastructure.process import LocalProcessRunner, python_command, python_module_command
 
 
 def test_running_process_can_be_cancelled(tmp_path) -> None:
@@ -20,3 +20,18 @@ def test_running_process_can_be_cancelled(tmp_path) -> None:
     )
     assert result.status == "blocked"
     assert result.error == "运行已被用户取消"
+
+
+def test_frozen_desktop_reuses_sidecar_as_python(monkeypatch) -> None:
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    assert python_command("experiment.py") == [
+        sys.executable,
+        "__run_python__",
+        "experiment.py",
+    ]
+    assert python_module_command("backend.cli", "daemon", unbuffered=True) == [
+        sys.executable,
+        "__run_module__",
+        "backend.cli",
+        "daemon",
+    ]
