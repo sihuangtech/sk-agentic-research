@@ -36,8 +36,8 @@ export default function SettingsPage() {
         <ProviderSettings />
         <Section title={t('settings.modelReview')}>
           <Field label={t('settings.generationProvider')}><ProviderSelect value={config.llm.provider} onChange={(value) => update('llm', 'provider', value)} /></Field>
-          <Field label={t('settings.reviewProvider')}><ProviderSelect allowEmpty value={config.llm.reviewer_provider || ''} onChange={(value) => update('llm', 'reviewer_provider', value || null)} /></Field>
-          <Field label={t('settings.reviewModel')}><input className="input" value={config.llm.reviewer_model || ''} onChange={(event) => update('llm', 'reviewer_model', event.target.value || null)} /></Field>
+          <Field label={t('settings.reviewProvider')}><ProviderSelect value={config.llm.reviewer_provider} onChange={(value) => update('llm', 'reviewer_provider', value)} /></Field>
+          <Field label={t('settings.reviewModel')}><input className="input" value={config.llm.reviewer_model} onChange={(event) => update('llm', 'reviewer_model', event.target.value)} /></Field>
           <NumberField label={t('settings.hypothesisThreshold')} value={config.workflow.hypothesis_review_threshold} onChange={(value) => update('workflow', 'hypothesis_review_threshold', value)} step="0.1" />
         </Section>
         <Section title={t('settings.experimentDiscipline')}>
@@ -67,6 +67,6 @@ export default function SettingsPage() {
 function Section({ title, children }) { return <section className="panel"><h2 className="mb-5 text-lg font-bold">{title}</h2><div className="grid gap-5 md:grid-cols-2">{children}</div></section>; }
 function Field({ label, children }) { return <label className="space-y-2 text-xs font-bold text-slate-400"><span>{label}</span>{children}</label>; }
 function NumberField({ label, value, onChange, step = '1' }) { return <Field label={label}><input type="number" step={step} className="input" value={value} onChange={(event) => onChange(Number(event.target.value))} /></Field>; }
-function ProviderSelect({ value, onChange, allowEmpty = false }) { const { t } = useTranslation(); return <select className="input" value={value} onChange={(event) => onChange(event.target.value)}>{allowEmpty && <option value="">{t('settings.sameAsGeneration')}</option>}<option value="openai">{t('settings.openaiCompatible')}</option><option value="anthropic">{t('settings.anthropicClaude')}</option><option value="google">{t('settings.googleGemini')}</option></select>; }
+function ProviderSelect({ value, onChange }) { const { t } = useTranslation(); return <select className="input" value={value} onChange={(event) => onChange(event.target.value)}><option value="openai">{t('settings.openaiCompatible')}</option><option value="anthropic">{t('settings.anthropicClaude')}</option><option value="google">{t('settings.googleGemini')}</option></select>; }
 function SeedInput({ value, onChange }) { const [text, setText] = useState(value.join(', ')); return <input className="input" value={text} onChange={(event) => setText(event.target.value)} onBlur={() => { const seeds = text.split(',').map(Number).filter(Number.isInteger); onChange(seeds); setText(seeds.join(', ')); }} />; }
 function Toggle({ label, value, onChange }) { return <label className="flex items-center justify-between rounded-xl bg-black/20 p-4 text-sm font-semibold"><span>{label}</span><input type="checkbox" checked={value} onChange={(event) => onChange(event.target.checked)} className="h-5 w-5 accent-cyan-300" /></label>; }

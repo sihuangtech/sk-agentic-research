@@ -15,27 +15,26 @@ class StrictConfigModel(BaseModel):
 
 
 class LlmSettings(StrictConfigModel):
-    provider: Literal["openai", "anthropic", "google"] = "openai"
-    model: str = "gpt-5.6-terra"
-    reviewer_provider: Literal["openai", "anthropic", "google"] | None = None
-    reviewer_model: str | None = None
-    max_tokens: int = Field(default=6000, ge=256, le=32000)
+    provider: Literal["openai", "anthropic", "google"]
+    reviewer_provider: Literal["openai", "anthropic", "google"]
+    reviewer_model: str
+    max_tokens: int = Field(ge=256, le=32000)
 
 
 class SearchSettings(StrictConfigModel):
-    providers: list[str] = Field(default_factory=lambda: ["arxiv", "semantic_scholar"])
-    results_per_provider: int = Field(default=5, ge=1, le=20)
-    request_timeout_seconds: int = Field(default=20, ge=3, le=120)
+    providers: list[str]
+    results_per_provider: int = Field(ge=1, le=20)
+    request_timeout_seconds: int = Field(ge=3, le=120)
 
 
 class ExperimentSettings(StrictConfigModel):
-    executor: Literal["local"] = "local"
-    timeout_minutes: int = Field(default=30, ge=1, le=1440)
-    train_seeds: list[int] = Field(default_factory=lambda: [11, 23, 37], min_length=2)
-    validation_seeds: list[int] = Field(default_factory=lambda: [101, 211, 307], min_length=2)
-    max_iterations: int = Field(default=2, ge=1, le=10)
-    minimum_success_rate: float = Field(default=1.0, ge=0.5, le=1.0)
-    maximum_coefficient_of_variation: float = Field(default=0.15, ge=0.0, le=2.0)
+    executor: Literal["local"]
+    timeout_minutes: int = Field(ge=1, le=1440)
+    train_seeds: list[int] = Field(min_length=2)
+    validation_seeds: list[int] = Field(min_length=2)
+    max_iterations: int = Field(ge=1, le=10)
+    minimum_success_rate: float = Field(ge=0.5, le=1.0)
+    maximum_coefficient_of_variation: float = Field(ge=0.0, le=2.0)
 
     @field_validator("train_seeds", "validation_seeds")
     @classmethod
@@ -54,30 +53,28 @@ class ExperimentSettings(StrictConfigModel):
 
 
 class SecuritySettings(StrictConfigModel):
-    allow_network: bool = False
-    max_memory_mb: int = Field(default=4096, ge=256)
-    max_output_kb: int = Field(default=1024, ge=64)
-    blocked_modules: list[str] = Field(
-        default_factory=lambda: ["subprocess", "socket", "httpx", "requests", "urllib"]
-    )
+    allow_network: bool
+    max_memory_mb: int = Field(ge=256)
+    max_output_kb: int = Field(ge=64)
+    blocked_modules: list[str]
 
 
 class WorkflowSettings(StrictConfigModel):
-    max_concurrent_pipelines: int = Field(default=1, ge=1, le=8)
-    max_ideas_per_cycle: int = Field(default=3, ge=1, le=20)
-    hypothesis_review_threshold: float = Field(default=7.0, ge=1, le=10)
-    daemon_interval_minutes: int = Field(default=60, ge=1)
-    human_review_before_execution: bool = True
+    max_concurrent_pipelines: int = Field(ge=1, le=8)
+    max_ideas_per_cycle: int = Field(ge=1, le=20)
+    hypothesis_review_threshold: float = Field(ge=1, le=10)
+    daemon_interval_minutes: int = Field(ge=1)
+    human_review_before_execution: bool
 
 
 class AppConfig(StrictConfigModel):
-    workspace_dir: str = "data/workspace"
+    workspace_dir: str
     research_directions: list[str]
-    llm: LlmSettings = Field(default_factory=LlmSettings)
-    search: SearchSettings = Field(default_factory=SearchSettings)
-    experiment: ExperimentSettings = Field(default_factory=ExperimentSettings)
-    security: SecuritySettings = Field(default_factory=SecuritySettings)
-    workflow: WorkflowSettings = Field(default_factory=WorkflowSettings)
+    llm: LlmSettings
+    search: SearchSettings
+    experiment: ExperimentSettings
+    security: SecuritySettings
+    workflow: WorkflowSettings
 
 
 def load_config(path: str | Path = "config.yaml") -> AppConfig:

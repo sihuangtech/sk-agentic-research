@@ -9,11 +9,12 @@ if [[ ! -x "$PROJECT_PYTHON" ]]; then
   exit 1
 fi
 
-BACKEND_PORT="${BACKEND_PORT:-$("$PROJECT_PYTHON" -c 'from dotenv import dotenv_values; print(dotenv_values(".env").get("BACKEND_PORT", "4019"))')}"
+BACKEND_PORT="${BACKEND_PORT:-$("$PROJECT_PYTHON" -c 'from dotenv import dotenv_values; print(dotenv_values(".env").get("BACKEND_PORT") or "")')}"
 if [[ ! "$BACKEND_PORT" =~ ^[0-9]+$ ]] || (( BACKEND_PORT < 1 || BACKEND_PORT > 65535 )); then
   echo "BACKEND_PORT 必须是 1 到 65535 之间的整数。" >&2
   exit 1
 fi
+export BACKEND_PORT
 
 if [[ ! -d frontend/node_modules ]]; then
   echo "未找到前端依赖。请先在 frontend 目录执行 npm ci。" >&2

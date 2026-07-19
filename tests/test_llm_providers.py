@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
+import pytest
 from google import genai
 
 from backend.infrastructure import llm
@@ -17,7 +18,7 @@ def test_openai_uses_custom_base_url(monkeypatch) -> None:
     monkeypatch.setenv("OPENAI_BASE_URL", "https://openai.local/v1")
     monkeypatch.setenv("OPENAI_API_MODE", "chat_completions")
 
-    assert llm.ProviderLlmClient("custom-model")._openai("hello", 100) == "openai-ok"
+    assert llm.ProviderLlmClient("custom-model", 100, "openai")._openai("hello", 100) == "openai-ok"
     constructor.assert_called_once_with(api_key="secret", base_url="https://openai.local/v1")
 
 
@@ -26,13 +27,23 @@ def test_openai_responses_mode(monkeypatch) -> None:
     client.responses.create.return_value = SimpleNamespace(output_text="responses-ok")
     monkeypatch.setattr(llm, "OpenAI", MagicMock(return_value=client))
     monkeypatch.setenv("OPENAI_API_KEY", "secret")
+    monkeypatch.setenv("OPENAI_BASE_URL", "https://openai.local/v1")
     monkeypatch.setenv("OPENAI_API_MODE", "responses")
 
-    result = llm.ProviderLlmClient("gpt-test")._openai("hello", 100)
+    result = llm.ProviderLlmClient("gpt-test", 100, "openai")._openai("hello", 100)
     assert result == "responses-ok"
     client.responses.create.assert_called_once_with(
         model="gpt-test", input="hello", max_output_tokens=100
     )
+
+
+def test_openai_rejects_missing_api_mode(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "secret")
+    monkeypatch.setenv("OPENAI_BASE_URL", "https://openai.local/v1")
+    monkeypatch.delenv("OPENAI_API_MODE", raising=False)
+
+    with pytest.raises(RuntimeError, match="OPENAI_API_MODE"):
+        llm.ProviderLlmClient("gpt-test", 100, "openai")._openai("hello", 100)
 
 
 def test_anthropic_uses_custom_base_url(monkeypatch) -> None:
@@ -43,7 +54,7 @@ def test_anthropic_uses_custom_base_url(monkeypatch) -> None:
     monkeypatch.setenv("ANTHROPIC_API_KEY", "secret")
     monkeypatch.setenv("ANTHROPIC_BASE_URL", "https://anthropic.local")
 
-    assert llm.ProviderLlmClient("claude-test")._anthropic("hello", 100) == "claude-ok"
+    assert llm.ProviderLlmClient("claude-test", 100, "anthropic")._anthropic("hello", 100) == "claude-ok"
     constructor.assert_called_once_with(api_key="secret", base_url="https://anthropic.local")
 
 
@@ -57,7 +68,7 @@ def test_google_uses_custom_base_url(monkeypatch) -> None:
     monkeypatch.setenv("GOOGLE_API_KEY", "secret")
     monkeypatch.setenv("GOOGLE_BASE_URL", "https://google.local")
 
-    assert llm.ProviderLlmClient("gemini-test")._gemini("hello", 100) == "gemini-ok"
+    assert llm.ProviderLlmClient("gemini-test", 100, "google")._gemini("hello", 100) == "gemini-ok"
     options = constructor.call_args.kwargs["http_options"]
     assert constructor.call_args.kwargs["api_key"] == "secret"
     assert options.base_url == "https://google.local"

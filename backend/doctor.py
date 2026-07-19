@@ -12,13 +12,7 @@ from backend.core.config import AppConfig
 
 
 def diagnose(config: AppConfig) -> dict[str, Any]:
-    model = config.llm.model
-    if model.startswith("claude"):
-        key_name = "ANTHROPIC_API_KEY"
-    elif model.startswith("gemini"):
-        key_name = "GOOGLE_API_KEY"
-    else:
-        key_name = "OPENAI_API_KEY"
+    key_name = f"{config.llm.provider.upper()}_API_KEY"
     return {
         "python": {"ok": sys.version_info >= (3, 10), "version": sys.version.split()[0]},
         "llm_key": {"ok": bool(os.getenv(key_name)), "required": key_name},

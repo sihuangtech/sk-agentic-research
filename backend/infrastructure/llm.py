@@ -19,10 +19,10 @@ class LlmClient(Protocol):
 class ProviderLlmClient:
     """根据模型名前缀选择官方 SDK。"""
 
-    def __init__(self, model: str, default_max_tokens: int = 6000, provider: str | None = None):
+    def __init__(self, model: str, default_max_tokens: int, provider: str):
         self.model = model
         self.default_max_tokens = default_max_tokens
-        self.provider = provider or self._infer_provider(model)
+        self.provider = provider
 
     def complete(self, prompt: str, max_tokens: int = 6000) -> str:
         max_tokens = min(max_tokens, self.default_max_tokens)
@@ -32,26 +32,21 @@ class ProviderLlmClient:
             return self._gemini(prompt, max_tokens)
         return self._openai(prompt, max_tokens)
 
-    @staticmethod
-    def _infer_provider(model: str) -> str:
-        if model.startswith("claude"):
-            return "anthropic"
-        if model.startswith("gemini"):
-            return "google"
-        return "openai"
-
     def _openai(self, prompt: str, max_tokens: int) -> str:
         key = os.getenv("OPENAI_API_KEY")
         if not key:
             raise RuntimeError("缺少 OPENAI_API_KEY")
-        client = OpenAI(api_key=key, base_url=os.getenv("OPENAI_BASE_URL") or None)
-        if os.getenv("OPENAI_API_MODE", "responses") == "responses":
+        client = OpenAI(api_key=key, base_url=_required_env("OPENAI_BASE_URL"))
+        api_mode = _required_env("OPENAI_API_MODE")
+        if api_mode == "responses":
             response = client.responses.create(
                 model=self.model,
                 input=prompt,
                 max_output_tokens=max_tokens,
             )
             return response.output_text or ""
+        if api_mode != "chat_completions":
+            raise RuntimeError("OPENAI_API_MODE 必须是 responses 或 chat_completions")
         response = client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
@@ -66,7 +61,7 @@ class ProviderLlmClient:
             raise RuntimeError("缺少 ANTHROPIC_API_KEY")
         response = Anthropic(
             api_key=key,
-            base_url=os.getenv("ANTHROPIC_BASE_URL") or None,
+            base_url=_required_env("ANTHROPIC_BASE_URL"),
         ).messages.create(
             model=self.model,
             max_tokens=max_tokens,
@@ -82,8 +77,8 @@ class ProviderLlmClient:
         from google import genai
         from google.genai import types
 
-        base_url = os.getenv("GOOGLE_BASE_URL")
-        http_options = types.HttpOptions(base_url=base_url) if base_url else None
+        base_url = _required_env("GOOGLE_BASE_URL")
+        http_options = types.HttpOptions(base_url=base_url)
         with genai.Client(api_key=key, http_options=http_options) as client:
             response = client.models.generate_content(
                 model=self.model,
@@ -94,6 +89,13 @@ class ProviderLlmClient:
                 ),
             )
         return response.text or ""
+
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name)
+    if not value or not value.strip():
+        raise RuntimeError(f"缺少 {name}")
+    return value.strip()
 
 
 def extract_json(text: str) -> Any:
