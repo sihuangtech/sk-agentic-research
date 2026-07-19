@@ -39,7 +39,7 @@ function ProviderCard({ provider, onSaved }) {
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState(provider.base_url || '');
   const [modelId, setModelId] = useState(provider.model_id || '');
-  const [apiMode, setApiMode] = useState(provider.api_mode || 'responses');
+  const [apiMode, setApiMode] = useState(provider.api_mode || '');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 

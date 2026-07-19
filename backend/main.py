@@ -4,9 +4,9 @@ import os
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 from backend.api.webapp import create_app
+
+load_dotenv()
 
 app = create_app()
 
@@ -14,4 +14,4 @@ app = create_app()
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("BACKEND_PORT", "4019")))
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ["BACKEND_PORT"]))

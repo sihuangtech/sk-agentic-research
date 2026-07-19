@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from dotenv import load_dotenv
 
 from backend.core.config import AppConfig, load_config
-from backend.core.provider_settings import PROVIDER_ENV
 from backend.core.runs import RunRepository
 from backend.core.storage import Workspace
 from backend.infrastructure.code_policy import PythonCodePolicy
@@ -42,11 +41,9 @@ def build_runtime(config_path: str = "config.yaml", prompts_path: str = "prompts
     workspace.ensure()
     runs = RunRepository(workspace)
     prompts = PromptRepository(prompts_path)
-    legacy_provider = ProviderLlmClient._infer_provider(config.llm.model)
-    generator_fallback = config.llm.model if legacy_provider == config.llm.provider else None
-    generator_model = _provider_model(config.llm.provider, generator_fallback)
-    reviewer_provider = config.llm.reviewer_provider or config.llm.provider
-    reviewer_model = config.llm.reviewer_model or _provider_model(reviewer_provider)
+    generator_model = _provider_model(config.llm.provider)
+    reviewer_provider = config.llm.reviewer_provider
+    reviewer_model = config.llm.reviewer_model
     generator = ProviderLlmClient(generator_model, config.llm.max_tokens, config.llm.provider)
     reviewer = ProviderLlmClient(reviewer_model, config.llm.max_tokens, reviewer_provider)
     policy = PythonCodePolicy(
@@ -92,6 +89,9 @@ def build_runtime(config_path: str = "config.yaml", prompts_path: str = "prompts
     return Runtime(config, workspace, runs, engine)
 
 
-def _provider_model(provider: str, fallback: str | None = None) -> str:
+def _provider_model(provider: str) -> str:
     env_name = f"{provider.upper()}_MODEL_ID"
-    return os.getenv(env_name) or fallback or PROVIDER_ENV[provider]["default_model"]
+    model = os.getenv(env_name)
+    if not model or not model.strip():
+        raise RuntimeError(f"缺少 {env_name}")
+    return model.strip()

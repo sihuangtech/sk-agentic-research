@@ -35,7 +35,7 @@ npm ci
 npm run dev
 ```
 
-开发服务器启动后访问 Vite 输出的本地地址。前端请求统一使用 `/api/v1`；`vite.config.js` 会将 `/api` 代理到 `http://127.0.0.1:8000`，因此需要在项目根目录另开终端启动后端：
+开发服务器启动后访问 Vite 输出的本地地址。前端请求统一使用 `/api/v1`；`vite.config.js` 会读取项目根目录 `.env` 中必填的 `BACKEND_PORT`，并把 `/api` 代理到对应的本机端口，因此需要在项目根目录另开终端启动后端：
 
 ```bash
 .venv/bin/python -m uvicorn backend.main:app --reload --port 8000
