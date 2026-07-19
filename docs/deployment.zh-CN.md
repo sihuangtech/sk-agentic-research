@@ -5,7 +5,7 @@
 1. 网站版：部署到服务器，通过 `https://agenticresearch.skstudio.cn` 访问；
 2. 桌面版：在 macOS、Windows 或 Linux 上构建 Tauri 安装包，由用户在本机运行。
 
-当前后端是 FastAPI，前端是 React/Vite。网站版使用 Docker 运行，桌面版使用 Tauri 2 启动 Python sidecar。两种版本共用同一套科研工作流和前端代码。
+当前后端是 FastAPI，前端是 React/Vite。网站版使用 Python 虚拟环境、systemd 和 Nginx 运行，桌面版使用 Tauri 2 启动 Python sidecar。两种版本共用同一套科研工作流和前端代码。
 
 ## 一、网站版部署
 
@@ -28,50 +28,87 @@ dig +short agenticresearch.skstudio.cn
 
 ### 2. 服务器准备
 
-以下示例以 Ubuntu 22.04/24.04 为例。先安装 Git、Docker 和 Nginx：
+以下示例以 Ubuntu 22.04/24.04 为例。服务器需要 Python 3.10 以上、Node.js 20/22、Git 和 Nginx：
 
 ```bash
 sudo apt update
-sudo apt install -y git nginx
-curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker "$USER"
+sudo apt install -y git nginx python3 python3-venv python3-pip nodejs npm
 ```
 
-重新登录服务器后检查：
+检查版本：
 
 ```bash
-docker --version
+python3 --version
+node --version
 nginx -v
 ```
 
 ### 3. 获取代码和配置密钥
 
 ```bash
-sudo mkdir -p /opt/agentic-research
-sudo chown -R "$USER":"$USER" /opt/agentic-research
-git clone <你的 Git 仓库地址> /opt/agentic-research
-cd /opt/agentic-research
+sudo mkdir -p /var/www/sk-agentic-research
+sudo chown -R "$USER":"$USER" /var/www/sk-agentic-research
+git clone <你的 Git 仓库地址> /var/www/sk-agentic-research
+cd /var/www/sk-agentic-research
 cp .env.example .env
 chmod 600 .env
 ```
 
-编辑 `.env`，至少配置实际使用的模型服务密钥。不要把 `.env` 提交到 Git。
+编辑 `.env`，保留 `BACKEND_PORT=4019`，并至少配置实际使用的模型服务密钥。不要把 `.env` 提交到 Git。
 
-### 4. 启动应用容器
+### 4. 安装依赖并构建网站
 
 ```bash
-cd /opt/agentic-research
-docker compose up -d --build
-docker compose ps
-curl -fsS http://127.0.0.1:8000/api/v1/system/status
+cd /var/www/sk-agentic-research
+python3 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install .
+npm --prefix frontend ci
+npm --prefix frontend run build
+mkdir -p backend/static
+find backend/static -mindepth 1 -delete
+cp -R frontend/dist/. backend/static/
 ```
 
-容器只绑定服务器本机的 `127.0.0.1:8000`，公网流量必须通过 Nginx 进入。研究产物会持久化到项目的 `data/workspace/`，配置文件挂载为项目根目录的 `config.yaml`。
+React/Vite 前端会构建为静态资源并复制到 `backend/static/`，由 FastAPI 托管；Nginx 统一把网页和 `/api/v1/` 请求转发到 FastAPI。
 
-查看日志：
+创建 `/etc/systemd/system/agentic-research.service`：
+
+```ini
+[Unit]
+Description=研序 Agentic Research
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/sk-agentic-research
+EnvironmentFile=/var/www/sk-agentic-research/.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=MPLCONFIGDIR=/tmp/agentic-research-matplotlib
+ExecStart=/var/www/sk-agentic-research/.venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port ${BACKEND_PORT}
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
+```
+
+启动服务：
 
 ```bash
-docker compose logs -f --tail=200 app
+sudo chown -R www-data:www-data /var/www/sk-agentic-research
+sudo chmod 600 /var/www/sk-agentic-research/.env
+sudo systemctl daemon-reload
+sudo systemctl enable --now agentic-research
+sudo systemctl status agentic-research
+curl -fsS http://127.0.0.1:4019/api/v1/system/status
 ```
 
 ### 5. Nginx 配置
@@ -82,7 +119,7 @@ docker compose logs -f --tail=200 app
 sudo nano /etc/nginx/sites-available/agenticresearch.skstudio.cn
 ```
 
-写入以下内容：
+首次申请证书前，先写入仅提供 HTTP 的配置：
 
 ```nginx
 server {
@@ -93,7 +130,7 @@ server {
     client_max_body_size 100m;
 
     location / {
-        proxy_pass http://127.0.0.1:8000;
+        proxy_pass http://127.0.0.1:4019;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -117,7 +154,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-### 6. 生成并配置 SSL 证书
+### 6. 生成并配置 IPv4/IPv6 SSL
 
 推荐使用 Let's Encrypt + Certbot。它会自动申请证书、修改 Nginx 配置并配置 HTTP 到 HTTPS 跳转。申请前必须满足：
 
@@ -141,6 +178,48 @@ sudo certbot --nginx \
   --agree-tos \
   --no-eff-email \
   --redirect
+```
+
+证书签发后，站点的完整 Nginx 配置应同时包含 HTTP 跳转和 IPv4/IPv6 HTTPS 监听：
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name agenticresearch.skstudio.cn;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name agenticresearch.skstudio.cn;
+
+    ssl_certificate /etc/letsencrypt/live/agenticresearch.skstudio.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/agenticresearch.skstudio.cn/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_session_cache shared:AgenticResearchSSL:10m;
+    ssl_session_timeout 1d;
+    ssl_session_tickets off;
+
+    client_max_body_size 100m;
+
+    location / {
+        proxy_pass http://127.0.0.1:4019;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Connection "";
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+        proxy_buffering off;
+        proxy_cache off;
+        gzip off;
+    }
+}
 ```
 
 执行过程中填写管理员邮箱。证书和私钥默认保存于：
@@ -217,16 +296,20 @@ ssl_certificate_key /etc/letsencrypt/live/agenticresearch.skstudio.cn/privkey.pe
 ### 7. 更新网站版本
 
 ```bash
-cd /opt/agentic-research
+cd /var/www/sk-agentic-research
 git pull --ff-only
-docker compose up -d --build
-docker image prune -f
+sudo -u www-data .venv/bin/python -m pip install .
+sudo -u www-data npm --prefix frontend ci
+sudo -u www-data npm --prefix frontend run build
+sudo -u www-data find backend/static -mindepth 1 -delete
+sudo -u www-data cp -R frontend/dist/. backend/static/
+sudo systemctl restart agentic-research
 ```
 
 更新前建议备份：
 
 ```bash
-tar -czf /opt/agentic-research-workspace-$(date +%Y%m%d-%H%M%S).tar.gz data/workspace config.yaml .env
+sudo tar -czf /var/backups/agentic-research-workspace-$(date +%Y%m%d-%H%M%S).tar.gz data/workspace config.yaml .env
 ```
 
 ## 二、桌面版构建
@@ -296,8 +379,11 @@ curl -I https://agenticresearch.skstudio.cn
 # 后端健康状态
 curl -fsS https://agenticresearch.skstudio.cn/api/v1/system/status
 
-# 容器状态
-docker compose ps
+# systemd 服务状态
+sudo systemctl status agentic-research
+
+# 本机后端端口
+curl -fsS http://127.0.0.1:4019/api/v1/system/status
 
 # Nginx 配置
 sudo nginx -t
