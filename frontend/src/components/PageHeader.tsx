@@ -1,4 +1,13 @@
-export default function PageHeader({ eyebrow, title, description, actions }) {
+import type { ReactNode } from 'react';
+
+type PageHeaderProps = {
+  eyebrow: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  actions?: ReactNode;
+};
+
+export default function PageHeader({ eyebrow, title, description, actions }: PageHeaderProps) {
   return (
     <header className="mb-9 flex flex-col justify-between gap-5 md:flex-row md:items-end">
       <div>

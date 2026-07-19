@@ -15,7 +15,7 @@ export default function RunCard({ run, busy, onApprove, onResume, onCancel }) {
             <StatusBadge value={run.decision} />
             <span className="text-xs text-slate-500">{t(`stage.${run.stage}`, { defaultValue: run.stage })}</span>
           </div>
-          <h3 className="text-lg font-bold">{run.title}</h3>
+          <h3 className="text-lg font-bold">{run.title === '离线验证演示' ? t('run.offlineDemo') : run.title}</h3>
           <p className="mt-1 text-xs text-slate-500">{run.id}</p>
         </div>
         <div className="flex gap-2">

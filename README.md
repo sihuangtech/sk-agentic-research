@@ -8,15 +8,15 @@ Agentic Research connects evidence discovery, falsifiable hypotheses, experiment
 
 ### Turn a research direction into an executable plan
 
-Provide a topic such as “reliable few-shot medical image segmentation.” Papermill collects and organizes evidence, proposes falsifiable hypotheses, and creates an experiment plan with a baseline, candidate approach, metrics, seed schedule, and pass criteria. The plan pauses for your approval before generated code runs.
+Provide a topic such as “reliable few-shot medical image segmentation.” Agentic Research collects and organizes evidence, proposes falsifiable hypotheses, and creates an experiment plan with a baseline, candidate approach, metrics, seed schedule, and pass criteria. The plan pauses for your approval before generated code runs.
 
 ### Run AI-authored experiments, not just AI-written conclusions
 
-After approval, Papermill generates Python experiments or parameterized Jupyter notebooks and runs them locally under controlled limits. Each trial retains its code, inputs, raw results, logs, exit status, and duration. Executed notebooks are retained for review and reproduction.
+After approval, Agentic Research generates Python experiments or parameterized Jupyter notebooks and runs them locally under controlled limits. Each trial retains its code, inputs, raw results, logs, exit status, and duration. Executed notebooks are retained for review and reproduction.
 
 ### Judge results with held-out validation
 
-Development seeds are used to improve a candidate; separate held-out seeds are used only for the final decision. Papermill compares baseline and candidate success rate, minimum improvement, and variability, then reports `accepted`, `rejected`, `inconclusive`, or `invalid` rather than treating a single successful run as a finding.
+Development seeds are used to improve a candidate; separate held-out seeds are used only for the final decision. Agentic Research compares baseline and candidate success rate, minimum improvement, and variability, then reports `accepted`, `rejected`, `inconclusive`, or `invalid` rather than treating a single successful run as a finding.
 
 ### Produce an auditable research report
 
@@ -24,7 +24,7 @@ Completed runs can produce Markdown, LaTeX, and optional PDF reports. Citations 
 
 ### Manage the workflow locally
 
-Use the Tauri desktop app, CLI, or Web console to see progress, live logs, metrics, hypotheses, reports, and approval requests. Interrupted runs can be resumed or cancelled. The desktop UI supports Simplified Chinese and English, follows the OS language on first launch, and remembers the user's explicit choice. Desktop data stays in the OS application-data directory; Web/CLI artifacts remain under `data/workspace/`.
+Use the Tauri desktop app, CLI, or Web console to see progress, live logs, metrics, hypotheses, reports, and approval requests. Interrupted runs can be resumed or cancelled. The desktop UI supports Simplified Chinese and English, follows the OS language on first launch, and remembers the user's explicit choice. Its appearance can follow the system or be set to light or dark. Desktop data stays in the OS application-data directory; Web/CLI artifacts remain under `data/workspace/`.
 
 ### Use your own model provider
 
@@ -34,7 +34,7 @@ OpenAI, Anthropic Claude, and Google Gemini are supported. Each provider has its
 
 - Metrics, thresholds, and seed schedules are fixed before each experiment; baseline and candidate are compared under the same conditions.
 - Generated code does not run through a shell. API keys are removed from its environment, and execution has time, memory, and log limits.
-- Papermill helps design, execute, and audit research; it cannot prove that a study design is sound, data is leak-free, or a conclusion is statistically significant. Domain review remains necessary for high-stakes research.
+- Agentic Research helps design, execute, and audit research; it cannot prove that a study design is sound, data is leak-free, or a conclusion is statistically significant. Domain review remains necessary for high-stakes research.
 
 ## Workflow
 

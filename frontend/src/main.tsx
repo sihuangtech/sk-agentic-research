@@ -1,14 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
-import { initializeApi } from './api/client.js'
+import App from './App'
+import { initializeApi } from './api/client'
 import i18n, { initializeI18n } from './i18n'
+import { initializeTheme } from './theme'
 
 const root = createRoot(document.getElementById('root'))
 
 const bootstrap = async () => {
   try {
+    initializeTheme()
     await initializeI18n()
     await initializeApi()
     root.render(

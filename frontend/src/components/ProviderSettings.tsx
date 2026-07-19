@@ -61,7 +61,7 @@ function ProviderCard({ provider, onSaved }) {
   return (
     <article className="rounded-2xl border border-white/10 bg-black/20 p-4">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h3 className="text-sm font-bold">{provider.label}</h3>
+        <h3 className="text-sm font-bold">{t(`providers.names.${provider.id}`, { defaultValue: provider.label })}</h3>
         <span className={provider.api_key_configured ? 'text-emerald-300' : 'text-slate-600'} title={provider.api_key_configured ? t('providers.keyConfigured') : t('providers.keyMissing')}>
           {provider.api_key_configured ? <CheckCircle2 size={17} /> : <KeyRound size={17} />}
         </span>
