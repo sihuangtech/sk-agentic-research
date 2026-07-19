@@ -237,7 +237,7 @@ data/workspace/*
 # Local submission documents (may contain private information)
 /Papermill_第一轮作品说明文档.md
 /Papermill_第一轮提交信息填写稿.md
-/Papermill——本地可审计AI科研工作流.docx
+*.docx
 
 # LaTeX compiler intermediates (generated papers and source remain versioned)
 data/workspace/latex/**/*.aux

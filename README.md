@@ -1,6 +1,6 @@
-# 研文工坊 Papermill: Local, Auditable AI Research Workflow
+# Agentic Research: Local, Auditable AI Research Agent
 
-Papermill connects evidence discovery, falsifiable hypotheses, experiment planning, real Python or Notebook execution, held-out validation, and research writing in a resumable local workflow. It treats generated claims as hypotheses to test, not as scientific results.
+Agentic Research connects evidence discovery, falsifiable hypotheses, experiment planning, real Python or Notebook execution, held-out validation, and research writing in a resumable autonomous research workflow. It treats generated claims as hypotheses to test, not as scientific results.
 
 [中文文档](README.zh.md)
 

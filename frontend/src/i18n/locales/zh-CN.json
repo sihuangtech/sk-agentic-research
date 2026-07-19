@@ -1,9 +1,9 @@
 {
   "app": {
-    "chineseName": "研文工坊",
-    "englishName": "Papermill",
+    "chineseName": "研序",
+    "englishName": "Agentic Research",
     "tagline": "本地科研工作台",
-    "documentTitle": "研文工坊 Papermill｜本地 AI 科研工作流",
+    "documentTitle": "研序｜自主科研智能体工作台",
     "safetyNotice": "本地执行生成代码仍有风险。正式实验建议放入独立容器。",
     "language": "界面语言",
     "languageChinese": "中文",
@@ -18,7 +18,7 @@
   },
   "bootstrap": {
     "title": "本地科研服务启动失败",
-    "hint": "请退出后重新打开研文工坊；开发环境可检查 Tauri 终端中的 sidecar 日志。",
+    "hint": "请退出后重新打开研序；开发环境可检查 Tauri 终端中的 sidecar 日志。",
     "unknownError": "发生未知错误"
   },
   "status": {
