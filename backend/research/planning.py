@@ -10,7 +10,7 @@ from backend.core.config import ExperimentSettings
 from backend.core.storage import atomic_write_json
 from backend.domain.models import Evidence, ExperimentManifest, Hypothesis
 from backend.infrastructure.code_policy import PythonCodePolicy
-from backend.infrastructure.llm import LlmClient, extract_json
+from backend.infrastructure.llm import LlmClient, extract_json_with_retry
 from backend.infrastructure.prompts import PromptRepository
 
 
@@ -52,7 +52,7 @@ class PlanningService:
             train_seeds=json.dumps(self.settings.train_seeds),
             validation_seeds=json.dumps(self.settings.validation_seeds),
         )
-        payload = extract_json(self.llm.complete(prompt))
+        payload = extract_json_with_retry(self.llm, prompt)
         if not isinstance(payload, dict):
             raise ValueError("实验规划结果必须是 JSON 对象")
 

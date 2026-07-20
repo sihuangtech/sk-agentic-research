@@ -9,7 +9,7 @@ from pathlib import Path
 
 from backend.core.storage import atomic_write_json, safe_identifier
 from backend.domain.models import Evidence, Hypothesis, ReviewScore
-from backend.infrastructure.llm import LlmClient, extract_json
+from backend.infrastructure.llm import LlmClient, extract_json_with_retry
 from backend.infrastructure.prompts import PromptRepository
 
 
@@ -46,7 +46,7 @@ class HypothesisService:
             max_ideas=max_ideas,
             evidence=context,
         )
-        raw_ideas = extract_json(self.generator.complete(prompt))
+        raw_ideas = extract_json_with_retry(self.generator, prompt)
         if not isinstance(raw_ideas, list):
             raise ValueError("假设生成结果必须是 JSON 数组")
 
@@ -84,7 +84,7 @@ class HypothesisService:
             hypothesis=json.dumps(idea, ensure_ascii=False, indent=2),
             evidence_ids=json.dumps(evidence_ids, ensure_ascii=False),
         )
-        return ReviewScore.model_validate(extract_json(self.reviewer.complete(prompt, max_tokens=1200)))
+        return ReviewScore.model_validate(extract_json_with_retry(self.reviewer, prompt, max_tokens=1200))
 
     @staticmethod
     def _identifier(title: str, hypothesis: str) -> str:

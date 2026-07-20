@@ -7,7 +7,7 @@ from pathlib import Path
 
 from backend.domain.models import ValidationReport
 from backend.infrastructure.code_policy import PythonCodePolicy
-from backend.infrastructure.llm import LlmClient, extract_json
+from backend.infrastructure.llm import LlmClient, extract_json_with_retry
 from backend.infrastructure.prompts import PromptRepository
 
 
@@ -31,7 +31,7 @@ class CandidateImprover:
             report=json.dumps(report.model_dump(mode="json"), ensure_ascii=False, indent=2),
             iteration=iteration,
         )
-        payload = extract_json(self.llm.complete(prompt))
+        payload = extract_json_with_retry(self.llm, prompt)
         code = payload.get("candidate_code") if isinstance(payload, dict) else None
         if not isinstance(code, str):
             raise ValueError("改进结果缺少 candidate_code")
