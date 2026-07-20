@@ -6,18 +6,39 @@ ideation:
 
     最多提出 {max_ideas} 个可执行、可证伪的假设。只能引用给定 evidence id，
     不得把代码仓库热度当作科学证据，不得承诺尚未运行的结果。
-    只输出 JSON 数组，每项必须包含：
+
+    输出格式是 JSON 数组，每项必须包含以下字段：
     title, problem, hypothesis, falsification_criteria,
     independent_variable, dependent_variables(数组), baselines(数组),
     expected_outcome, novelty, evidence_ids(数组)。
+
+    示例（仅展示一条，你需要输出最多 {max_ideas} 条）：
+    [
+      {{
+        "title": "方法A相比基线B在任务C上的效果",
+        "problem": "当前方法存在什么问题",
+        "hypothesis": "我们假设方法A能够改进指标X",
+        "falsification_criteria": "如果指标X没有显著提升则假设被证伪",
+        "independent_variable": "是否使用方法A",
+        "dependent_variables": ["指标X", "指标Y"],
+        "baselines": ["基线B"],
+        "expected_outcome": "方法A将提升指标X至少5%",
+        "novelty": "该方法首次将技术D应用于领域E",
+        "evidence_ids": ["arxiv-abc123"]
+      }}
+    ]
+
+    严格要求：你的回复必须是且仅是一段合法 JSON 数组。不要输出任何解释、注释、markdown 代码块标记（如```json）或其他非 JSON 文本。直接以 [ 开头，以 ] 结尾。
 
   review_hypothesis: |
     你是独立科研审稿人。按 1-10 分评价以下假设，不得因为语言流畅而加分。
     假设：{hypothesis}
     可用证据 id：{evidence_ids}
-    只输出 JSON：
-    {{"novelty":整数,"feasibility":整数,"falsifiability":整数,
-    "evidence_support":整数,"rationale":"简明理由"}}
+
+    输出格式示例：
+    {{"novelty":7,"feasibility":8,"falsifiability":9,"evidence_support":6,"rationale":"简明理由"}}
+
+    严格要求：你的回复必须是且仅是一个合法 JSON 对象。不要输出任何解释、注释、markdown 代码块标记或其他非 JSON 文本。直接以 {{ 开头，以 }} 结尾。
 
 planning:
   design_experiment: |
@@ -35,21 +56,23 @@ planning:
     4. 每个代码文件不得超过 250 行。
     5. minimum_delta 必须在实验前明确，不能看结果后调整。
 
-    只输出一个 JSON 对象：
+    输出一个 JSON 对象，包含以下字段：
     {{
-      "plan_markdown":"完整实验计划",
+      "plan_markdown":"完整实验计划（纯文本）",
       "manifest":{{
         "objective":"...",
-        "metric":{{"name":"...","json_path":"metrics.score",
-          "direction":"maximize或minimize","minimum_delta":0.0}},
+        "metric":{{"name":"...", "json_path":"metrics.score",
+          "direction":"maximize或minimize", "minimum_delta":0.0}},
         "baseline":{{"parameters":{{}}}},
         "candidate":{{"parameters":{{}}}},
         "required_modules":[],
         "expected_result_schema":{{"metrics.score":"number"}}
       }},
-      "baseline_code":"完整 Python 代码",
-      "candidate_code":"完整 Python 代码"
+      "baseline_code":"完整 Python 代码（作为字符串）",
+      "candidate_code":"完整 Python 代码（作为字符串）"
     }}
+
+    严格要求：你的回复必须是且仅是一个合法 JSON 对象。不要输出任何解释、注释、markdown 代码块标记（如```json）或其他非 JSON 文本。直接以 {{ 开头，以 }} 结尾。确保所有字符串值中的换行符使用 \n 转义，引号使用 \" 转义。
 
 experiment:
   improve_candidate: |
@@ -59,7 +82,11 @@ experiment:
     当前候选代码：{code}
     修复真实错误或提出有理论理由的改进；不得硬编码指标或读取验证目录。
     代码继续遵守 PAPERMILL_SEED/PAPERMILL_OUTPUT 协议且不超过 250 行。
-    只输出 JSON：{{"candidate_code":"完整 Python 代码"}}
+
+    输出格式示例：
+    {{"candidate_code":"import os\nimport json\n..."}}
+
+    严格要求：你的回复必须是且仅是一个合法 JSON 对象，只包含 candidate_code 字段。不要输出任何解释、注释、markdown 代码块标记或其他非 JSON 文本。直接以 {{ 开头，以 }} 结尾。确保代码中的换行符使用 \n 转义，引号使用 \" 转义。
 
 writing:
   draft_paper: |
@@ -71,7 +98,10 @@ writing:
 
     不得创造论文、作者、DOI、实验次数或指标。引用只能使用给定 evidence id。
     结果未通过时，标题、摘要和结论必须明确写成未证实、无效或不确定结果。
-    只输出 JSON：
-    {{"title":"...","abstract":"...","introduction":"...","methods":"...",
-    "results":"...","limitations":"...","conclusion":"...",
+
+    输出一个 JSON 对象：
+    {{"title":"...", "abstract":"...", "introduction":"...", "methods":"...",
+    "results":"...", "limitations":"...", "conclusion":"...",
     "cited_evidence_ids":["..."]}}
+
+    严格要求：你的回复必须是且仅是一个合法 JSON 对象。不要输出任何解释、注释、markdown 代码块标记或其他非 JSON 文本。直接以 {{ 开头，以 }} 结尾。确保所有字符串值中的换行符使用 \n 转义，引号使用 \" 转义。

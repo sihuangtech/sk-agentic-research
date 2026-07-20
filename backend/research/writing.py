@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 
 from backend.core.storage import atomic_write_json
 from backend.domain.models import Evidence, Hypothesis, ValidationReport
-from backend.infrastructure.llm import LlmClient, extract_json
+from backend.infrastructure.llm import LlmClient, extract_json_with_retry
 from backend.infrastructure.prompts import PromptRepository
 
 
@@ -52,7 +52,7 @@ class WritingService:
             validation=report.model_dump_json(indent=2),
             claim_status=self._claim_status(report),
         )
-        draft = PaperDraft.model_validate(extract_json(self.llm.complete(prompt)))
+        draft = PaperDraft.model_validate(extract_json_with_retry(self.llm, prompt))
         if report.decision.value != "accepted":
             label = self._claim_status(report)
             draft.title = f"[{label}] {draft.title}"
