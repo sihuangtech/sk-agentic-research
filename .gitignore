@@ -119,6 +119,13 @@ data/workspace/*
 !data/workspace/.gitkeep
 
 # Local submission documents may contain private information
+# Private competition documents (including their former root paths)
+/作品提交要求.md
+/大赛报名通知.md
+/第一轮作品提交表单.md
+/docs/作品提交要求.md
+/docs/大赛报名通知.md
+/docs/第一轮作品提交表单.md
 /Papermill_第一轮作品说明文档.md
 /Papermill_第一轮提交信息填写稿.md
 *.docx
