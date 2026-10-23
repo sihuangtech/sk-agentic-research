@@ -1,6 +1,8 @@
 # 第二月亮
 
-<img src="frontend/public/brand/second-moon.png" alt="第二月亮图标" width="96" />
+<p align="center">
+  <img src="frontend/public/brand/second-moon.png" alt="第二月亮图标" width="96" />
+</p>
 
 你的科研个人 Agent。
 
@@ -82,3 +84,7 @@ npm run desktop:build
 ## 许可证
 
 [GPL-3.0-only](LICENSE)。第三方依赖遵循各自的许可证。
+
+## 星标历史
+
+[![星标历史图表](https://api.star-history.com/svg?repos=sihuangtech/sk-research-agent&type=Date)](https://star-history.com/#sihuangtech/sk-research-agent&Date)

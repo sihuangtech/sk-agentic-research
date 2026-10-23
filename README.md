@@ -1,6 +1,8 @@
 # Second Moon
 
-<img src="frontend/public/brand/second-moon.png" alt="Second Moon icon" width="96" />
+<p align="center">
+  <img src="frontend/public/brand/second-moon.png" alt="Second Moon icon" width="96" />
+</p>
 
 Your personal research agent.
 
@@ -82,3 +84,7 @@ For browser development, run `npm run dev` and open `http://127.0.0.1:5173`. Dev
 ## License
 
 [GPL-3.0-only](LICENSE). Third-party dependencies retain their respective licenses.
+
+## Star history
+
+[![Star History Chart](https://api.star-history.com/svg?repos=sihuangtech/sk-research-agent&type=Date)](https://star-history.com/#sihuangtech/sk-research-agent&Date)
