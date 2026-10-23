@@ -118,6 +118,9 @@ temp/
 data/workspace/*
 !data/workspace/.gitkeep
 
+# Documentation is private and stays local
+/docs/
+
 # Local submission documents may contain private information
 # Private competition documents (including their former root paths)
 /作品提交要求.md
