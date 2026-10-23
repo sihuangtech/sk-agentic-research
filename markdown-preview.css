@@ -1,0 +1,274 @@
+/*
+ * Academic Markdown preview — 科研学术排版
+ * Load this file through your Markdown previewer's custom stylesheet setting.
+ * Local fonts only; math rendering still requires KaTeX or MathJax support.
+ */
+
+:root {
+  --academic-paper: var(--vscode-editor-background, #1e1e22);
+  --academic-ink: #dedee3;
+  --academic-muted: #a8abb6;
+  --academic-accent: #93bee5;
+  --academic-rule: #474952;
+  --academic-soft: #27282f;
+  --academic-code: #d9e2ee;
+  --academic-row-rule: #373942;
+  --academic-highlight: #584b28;
+  --academic-selection: #334d6a;
+  --academic-serif: "Libertinus Serif", "STIX Two Text", "Times New Roman",
+    "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
+  --academic-sans: "Helvetica Neue", "Noto Sans CJK SC", "Source Han Sans SC",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  --academic-mono: "SFMono-Regular", "Cascadia Code", "JetBrains Mono",
+    "Noto Sans Mono CJK SC", Consolas, monospace;
+}
+
+html {
+  color-scheme: dark;
+  background: var(--academic-paper);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  box-sizing: border-box;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 48px 56px 72px;
+  background: var(--academic-paper);
+}
+
+/* Common preview containers, including VS Code and Markdown Preview Enhanced. */
+:where(body, .markdown-body, .markdown-preview, .markdown-preview-view) {
+  color: var(--academic-ink);
+  background-color: var(--academic-paper);
+  font-family: var(--academic-serif);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.85;
+  letter-spacing: 0.012em;
+  overflow-wrap: break-word;
+  line-break: strict;
+  tab-size: 4;
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+  color: var(--academic-ink);
+  font-family: var(--academic-sans);
+  font-weight: 650;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-wrap: balance;
+  scroll-margin-top: 24px;
+  break-after: avoid-page;
+}
+
+h1 {
+  margin: 0 0 1.25em;
+  padding: 0 0 0.65em;
+  border-bottom: 2px solid var(--academic-ink);
+  font-size: 2em;
+  font-weight: 700;
+  text-align: center;
+}
+
+h2 {
+  margin: 2em 0 0.85em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--academic-rule);
+  font-size: 1.4em;
+}
+
+h3 { margin: 1.65em 0 0.65em; font-size: 1.17em; }
+h4 { margin: 1.4em 0 0.55em; font-size: 1.04em; }
+h5, h6 { margin: 1.25em 0 0.5em; font-size: 1em; }
+h6 { color: var(--academic-muted); }
+
+p {
+  margin: 0 0 1em;
+  orphans: 3;
+  widows: 3;
+}
+
+/* Explicit classes are optional; ordinary Markdown needs no extra markup. */
+.document-meta, .authors, .affiliation {
+  color: var(--academic-muted);
+  font-family: var(--academic-sans);
+  font-size: 0.88em;
+  text-align: center;
+}
+
+.abstract {
+  margin: 1.8em 0;
+  padding: 1.1em 1.4em;
+  border-block: 1px solid var(--academic-rule);
+  font-size: 0.95em;
+}
+
+strong, b { font-weight: 700; }
+small { font-size: 0.85em; }
+sup, sub { font-size: 0.75em; line-height: 0; }
+
+a {
+  color: var(--academic-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.17em;
+  overflow-wrap: anywhere;
+}
+
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--academic-accent); outline-offset: 3px; }
+
+ul, ol { margin: 0.6em 0 1.1em; padding-left: 1.8em; }
+li { margin: 0.3em 0; padding-left: 0.15em; }
+li > :where(ul, ol) { margin-block: 0.3em; }
+li > p { margin-block: 0.35em; }
+.task-list-item { list-style: none; }
+.task-list-item input[type="checkbox"] { margin-right: 0.5em; accent-color: var(--academic-accent); }
+
+blockquote {
+  margin: 1.25em 0;
+  padding: 0.65em 1.2em;
+  border-left: 3px solid var(--academic-rule);
+  color: var(--academic-muted);
+  background: var(--academic-soft);
+  font-size: 0.95em;
+}
+
+blockquote > :last-child { margin-bottom: 0; }
+hr { margin: 2em 0; border: 0; border-top: 1px solid var(--academic-rule); }
+
+/* Three-line tables: no vertical rules or decorative zebra striping. */
+table {
+  width: 100%;
+  margin: 1.5em 0;
+  border: 0;
+  border-top: 2px solid var(--academic-ink);
+  border-bottom: 2px solid var(--academic-ink);
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+caption, figcaption, .figure-caption, .table-caption {
+  color: var(--academic-muted);
+  font-size: 0.88em;
+  line-height: 1.6;
+  text-align: center;
+}
+
+caption { padding: 0 0 0.7em; caption-side: top; }
+th, td { padding: 0.65em 0.8em; border: 0; text-align: left; vertical-align: top; }
+thead { border-bottom: 1px solid var(--academic-ink); }
+th { font-family: var(--academic-sans); font-weight: 650; }
+tr, th, td { background: transparent; }
+tbody tr + tr { border-top: 1px solid var(--academic-row-rule); }
+table p { margin-bottom: 0.35em; }
+
+code, pre, kbd, samp { font-family: var(--academic-mono); letter-spacing: 0; }
+:not(pre) > code {
+  padding: 0.12em 0.35em;
+  border-radius: 3px;
+  color: var(--academic-code);
+  background: var(--academic-soft);
+  font-size: 0.85em;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  max-width: 100%;
+  margin: 1.25em 0;
+  padding: 1em 1.15em;
+  overflow-x: auto;
+  border: 1px solid var(--academic-rule);
+  border-radius: 4px;
+  color: var(--academic-code);
+  background: var(--academic-soft);
+  font-size: 0.82em;
+  line-height: 1.65;
+  text-align: left;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+pre code { padding: 0; border: 0; background: transparent; color: inherit; font-size: inherit; }
+pre code::before, pre code::after { content: none; }
+kbd { padding: 0.1em 0.4em; border: 1px solid var(--academic-rule); border-radius: 3px; font-size: 0.8em; }
+
+img, svg, video { max-width: 100%; height: auto; }
+img { display: block; margin: 1.2em auto; object-fit: contain; }
+/* Keep inline icons and mathematical SVGs in their native flow. */
+a img, .emoji, .katex img { display: inline-block; margin: 0; vertical-align: middle; }
+figure { margin: 1.5em 0; text-align: center; }
+figure img { margin-bottom: 0.6em; }
+figure, figcaption { break-inside: avoid-page; }
+
+.katex-display, mjx-container[display="true"], .MathJax_Display {
+  max-width: 100%;
+  margin: 1.4em 0;
+  padding-block: 0.3em;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+}
+
+.katex { font-size: 1.08em; }
+.footnotes, .footnote, .references, [role="doc-endnotes"] { font-size: 0.88em; line-height: 1.7; }
+.footnotes, [role="doc-endnotes"] { margin-top: 2.2em; padding-top: 0.8em; border-top: 1px solid var(--academic-rule); }
+.references li, [role="doc-bibliography"] li { margin-bottom: 0.75em; }
+.footnote-ref, .footnote-backref { text-decoration: none; }
+details { margin: 1em 0; }
+summary { cursor: pointer; font-family: var(--academic-sans); font-weight: 600; }
+mark { color: var(--academic-ink); background: var(--academic-highlight); }
+::selection { color: var(--academic-ink); background: var(--academic-selection); }
+
+@media screen and (max-width: 640px) {
+  body { padding: 24px 20px 40px; }
+  :where(body, .markdown-body, .markdown-preview, .markdown-preview-view) { font-size: 16px; }
+  h1 { font-size: 1.65em; }
+  h2 { font-size: 1.3em; }
+  table { display: block; max-width: 100%; overflow-x: auto; }
+  th, td { min-width: 7em; }
+}
+
+@page { size: A4; margin: 22mm 20mm; }
+
+@media print {
+  :root {
+    --academic-paper: #fff;
+    --academic-ink: #22252a;
+    --academic-muted: #606874;
+    --academic-accent: #204c72;
+    --academic-rule: #cdd2d8;
+    --academic-soft: #f4f5f7;
+    --academic-code: #273444;
+    --academic-row-rule: #e5e7eb;
+    --academic-highlight: #fff0b3;
+  }
+  html { color-scheme: light; }
+  html, body { background: #fff; }
+  body { max-width: none; margin: 0; padding: 0; }
+  :where(body, .markdown-body, .markdown-preview, .markdown-preview-view) {
+    color: #000;
+    background: #fff;
+    font-size: 11pt;
+    line-height: 1.65;
+  }
+  h1 { font-size: 20pt; }
+  h2 { margin-top: 1.6em; font-size: 15pt; }
+  h3 { font-size: 12.5pt; }
+  a { color: #000; text-decoration: none; }
+  /* Do not append URLs: long references otherwise overwhelm the printed page. */
+  a[href]::after { content: none; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow: visible; font-size: 8.5pt; }
+  table { display: table; width: 100%; overflow: visible; font-size: 9pt; }
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+  tr { break-inside: avoid-page; }
+  th, td { min-width: 0; padding: 0.45em 0.6em; overflow-wrap: anywhere; }
+  blockquote { color: #333; background: transparent; }
+  .katex-display, mjx-container[display="true"], .MathJax_Display { overflow: visible; }
+  .footnote-backref, .header-anchor, .anchor { display: none; }
+}

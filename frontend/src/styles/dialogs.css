@@ -1,0 +1,101 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #050607ad;
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 10;
+}
+.modal {
+  position: relative;
+  border: 1px solid #464b51;
+  border-radius: 14px;
+  background: #202328;
+  box-shadow: 0 22px 80px #0007;
+  padding: 28px;
+  width: min(780px, 95vw);
+  max-height: 90vh;
+  overflow: auto;
+}
+.modal h2 {
+  font-family: "Songti SC", serif;
+  font-size: 25px;
+  font-weight: 400;
+  margin: 10px 0;
+}
+.modal > p {
+  font-size: 12px;
+}
+.modal-close {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  padding: 5px;
+  display: flex;
+}
+.provider-layout {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+.provider-layout nav {
+  border-right: 1px solid #3a3e45;
+  padding-right: 12px;
+}
+.provider-layout nav button {
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  font-size: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.provider-layout nav small {
+  display: block;
+  font-size: 10px;
+  width: 100%;
+  overflow-wrap: anywhere;
+}
+.provider-layout form {
+  display: grid;
+  gap: 13px;
+}
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.presets button {
+  font-size: 10px;
+  border: 1px solid #43484f;
+  padding: 5px 7px;
+}
+.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.checkbox-label {
+  flex-direction: row;
+  align-items: center;
+}
+.form-message {
+  font-size: 12px;
+  padding: 10px;
+  background: #30372c;
+  color: #d1ddc7;
+  border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+.compact {
+  max-width: 500px;
+}
+.compact form {
+  display: grid;
+  gap: 15px;
+}

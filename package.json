@@ -1,36 +1,67 @@
 {
-  "name": "sk-agentic-research",
-  "version": "0.3.0",
-  "description": "Cloud-or-local autonomous research agent for auditable scientific workflows",
+  "name": "sk-research-agent",
+  "version": "0.4.0",
+  "description": "Second Moon, your local-first personal research agent",
+  "workspaces": [
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "directories": {
     "doc": "docs",
-    "test": "tests"
+    "test": "service/tests"
   },
   "scripts": {
-    "test": "node scripts/run-python.mjs -m pytest && node scripts/run-python.mjs -m ruff check backend tests scripts/build_desktop_sidecar.py && node scripts/check-i18n.mjs && npm --prefix frontend run typecheck && npm --prefix frontend run lint",
+    "dev": "node scripts/dev.mjs",
+    "test": "tsx --test service/tests/*.test.ts",
+    "typecheck": "tsc --noEmit && npm --workspace frontend run typecheck",
+    "lint": "npm run check:lines && biome lint service shared frontend/src scripts",
+    "check:lines": "node scripts/check-source-lines.mjs",
+    "format": "biome format --write service shared frontend/src scripts",
+    "build": "tsc && npm --workspace frontend run build",
+    "service:dev": "tsx service/main.ts",
     "tauri": "tauri",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build",
-    "frontend:dev": "npm --prefix frontend run dev",
-    "frontend:build": "npm --prefix frontend run build",
-    "desktop:sidecar": "node scripts/run-python.mjs scripts/build_desktop_sidecar.py",
+    "frontend:dev": "npm --workspace frontend run dev",
+    "frontend:build": "npm --workspace frontend run build",
+    "desktop:sidecar": "node scripts/package-sidecar.mjs",
     "desktop:before-dev": "npm run desktop:sidecar && npm run frontend:dev",
-    "desktop:prepare": "npm run frontend:build && npm run desktop:sidecar"
+    "desktop:prepare": "npm run build && npm run desktop:sidecar"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sihuangtech/sk-agentic-research.git"
+    "url": "git+https://github.com/sihuangtech/sk-research-agent.git"
   },
   "keywords": [],
   "author": "",
   "license": "GPL-3.0-only",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/sihuangtech/sk-agentic-research/issues"
+    "url": "https://github.com/sihuangtech/sk-research-agent/issues"
   },
-  "homepage": "https://github.com/sihuangtech/sk-agentic-research#readme",
+  "homepage": "https://github.com/sihuangtech/sk-research-agent#readme",
   "devDependencies": {
-    "@tauri-apps/cli": "^2.11.4"
+    "@biomejs/biome": "^2.6.2",
+    "@tauri-apps/cli": "^2.12.4",
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@earendil-works/pi-agent-core": "^1.4.0",
+    "@earendil-works/pi-ai": "^1.4.0",
+    "@earendil-works/pi-coding-agent": "^1.4.0",
+    "@fastify/cors": "^11.3.1",
+    "@libsql/client": "^0.18.0",
+    "@napi-rs/keyring": "^2.1.2",
+    "drizzle-orm": "^0.45.4",
+    "fastify": "^5.12.7",
+    "i18next": "^26.5.6",
+    "typebox": "^1.4.3",
+    "unpdf": "^1.9.1",
+    "zod": "^4.6.7"
+  }
 }

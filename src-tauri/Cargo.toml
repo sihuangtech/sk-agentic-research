@@ -1,17 +1,17 @@
 [package]
-name = "papermill-desktop"
-version = "0.3.0"
-description = "Local-first Agentic Research autonomous research agent desktop application"
+name = "agentic-research"
+version = "0.4.0"
+description = "Second Moon, your local-first personal research agent"
 authors = ["SK Studio"]
 license = "GPL-3.0-only"
-repository = "https://github.com/sihuangtech/sk-agentic-research"
+repository = "https://github.com/sihuangtech/sk-research-agent"
 edition = "2021"
 rust-version = "1.77.2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "papermill_desktop_lib"
+name = "agentic_research_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
@@ -21,7 +21,9 @@ tauri-build = { version = "2.6.3", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
-tauri = { version = "2.11.5", features = [] }
+tauri = { version = "2.11.5", features = ["tray-icon"] }
 tauri-plugin-log = "2"
 tauri-plugin-shell = "2"
 uuid = { version = "1.20.0", features = ["v4"] }
+tauri-plugin-dialog = "2.7.2"
+tauri-plugin-single-instance = "2.4.3"

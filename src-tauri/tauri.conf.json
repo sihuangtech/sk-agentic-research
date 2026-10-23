@@ -1,20 +1,20 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "研序",
-  "version": "0.3.0",
-  "identifier": "cn.skstudio.papermill",
+  "productName": "第二月亮",
+  "version": "0.4.0",
+  "identifier": "cn.skstudio.agenticresearch",
   "build": {
     "frontendDist": "../frontend/dist",
-    "devUrl": "http://localhost:5173",
+    "devUrl": "http://127.0.0.1:5173",
     "beforeDevCommand": "npm run desktop:before-dev",
     "beforeBuildCommand": "npm run desktop:prepare"
   },
   "app": {
     "windows": [
       {
-        "title": "研序 · Agentic Research",
-        "width": 1280,
-        "height": 800,
+        "title": "第二月亮",
+        "width": 1440,
+        "height": 900,
         "minWidth": 1024,
         "minHeight": 640,
         "center": true,
@@ -23,15 +23,16 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:*; img-src 'self' asset: http://asset.localhost data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:"
+      "csp": "default-src 'self'; worker-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:* blob:; img-src 'self' data: blob:; frame-src blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:"
     }
   },
   "bundle": {
     "active": true,
     "targets": "all",
     "externalBin": [
-      "binaries/papermill-backend"
+      "binaries/research-node"
     ],
+    "resources": { "runtime/": "runtime/" },
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

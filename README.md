@@ -1,137 +1,84 @@
-# Agentic Research: Cloud or Local, Auditable Research Agent
+# Second Moon
 
-Agentic Research connects evidence discovery, falsifiable hypotheses, experiment planning, real Python or Notebook execution, held-out validation, and research writing in a resumable autonomous research workflow. It treats generated claims as hypotheses to test, not as scientific results.
+<img src="frontend/public/brand/second-moon.png" alt="Second Moon icon" width="96" />
 
-[中文文档](README.zh.md) · [Changelog](CHANGELOG.md)
+Your personal research agent.
 
-## What you can do with it
+Work from a paper or an idea to analysis scripts, experiments and research outputs in the same project. Second Moon reads and edits real files, runs local tools and saves results in your project folder, turning conversations into work you can inspect and reuse.
 
-### Turn a research direction into an executable plan
+[中文说明](README.zh.md) · [Get started](#get-started) · [Run from source](#run-from-source) · [Data and background work](#data-and-background-work)
 
-Provide a topic such as “reliable few-shot medical image segmentation.” Agentic Research collects and organizes evidence, proposes falsifiable hypotheses, and creates an experiment plan with a baseline, candidate approach, metrics, seed schedule, and pass criteria. The plan pauses for your approval before generated code runs.
+## What you can do
 
-### Run AI-authored experiments, not just AI-written conclusions
+- **Understand a research project**: review documentation, code and materials, identify research goals and decide what to test next. Keep separate conversations for different projects and reopen past sessions to continue working.
+- **Read papers and explore literature**: extract PDF text with page references and find publication titles, authors, DOIs and source links to support your notes and evidence review.
+- **Analyze data and run experiments**: inspect data, write or revise scripts, execute local commands and save results and charts in the project. Project environments such as Python, R and Julia must be installed separately.
+- **Collaborate during execution**: follow streaming answers and tool results, steer an active task, queue a follow-up or stop the current turn. Run lengthy commands as independent jobs, inspect their status and recent logs, and cancel them separately.
+- **Inspect and edit outputs**: browse files, edit text and code, and preview PDFs and images. Responses support Markdown, tables and mathematical notation. The editor detects changes made by other programs before saving.
+- **Keep research context**: save personal preferences and project memory for future turns, then edit or delete them whenever needed.
+- **Schedule ongoing research**: set up recurring tasks, such as finding new papers and updating literature notes. Every run creates a conversation so you can inspect its process and results.
 
-After approval, Agentic Research generates Python experiments or parameterized Jupyter notebooks and runs them locally under controlled limits. Each trial retains its code, inputs, raw results, logs, exit status, and duration. Executed notebooks are retained for review and reproduction.
+## Get started
 
-### Judge results with held-out validation
+1. Open the app, choose **Open project**, and select an existing research folder.
+2. Connect your model service in **Models & API settings**, save the configuration and test the connection. You can also connect a model already running locally.
+3. Create a research session, select a model and describe your task. Press `⌘ / Ctrl + Enter` to send.
+4. Use **Files**, **Jobs**, **Memory** and **Automations** to inspect outputs and manage ongoing work.
 
-Development seeds are used to improve a candidate; separate held-out seeds are used only for the final decision. Agentic Research compares baseline and candidate success rate, minimum improvement, and variability, then reports `accepted`, `rejected`, `inconclusive`, or `invalid` rather than treating a single successful run as a finding.
+Try a task such as:
 
-### Produce an auditable research report
+> Read the project documentation and existing scripts. Summarize completed work and identify the questions that still need to be tested.
 
-Completed runs can produce Markdown, LaTeX, and optional PDF reports. Citations are drawn from the saved evidence snapshot, and results and limitations are included. Unvalidated results are explicitly labelled instead of being presented as positive conclusions.
+> Inspect the CSV files in data, report missing values and outliers, write a reproducible analysis script, save charts to figures, and record the commands you actually run.
 
-### Manage the workflow locally
+> Read the methods section of this PDF. Include page references and list the data, parameters and steps needed to reproduce the experiment. Separate anything the paper does not establish.
 
-Use the Tauri desktop app, CLI, or Web console to see progress, live logs, metrics, hypotheses, reports, and approval requests. Interrupted runs can be resumed or cancelled. The desktop UI supports Simplified Chinese and English, follows the OS language on first launch, and remembers the user's explicit choice. Its appearance can follow the system or be set to light or dark. Desktop data stays in the OS application-data directory; Web/CLI artifacts remain under `data/workspace/`.
+The agent can change files and execute local commands. Start with a separate project to become familiar with its behavior, and keep backups of important materials.
 
-### Use your own model provider
+## Languages
 
-Model execution is unified on the OpenAI Agents SDK. OpenAI uses the native Responses or Chat Completions model path; Anthropic Claude and Google Gemini use the SDK's LiteLLM adapter. Each provider still has its own Base URL, model ID, and API key.
+Choose from Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, German, Spanish, Brazilian Portuguese and Russian in the sidebar. Your choice is saved locally; the first launch follows your system or browser language preferences.
 
-## Operating boundaries
+Interface labels, dates, service messages and tray menus update together without clearing your draft. New turns and newly scheduled tasks default to the selected language; you can request another response language in the task. Existing files, user content and past responses retain their original text.
 
-- Metrics, thresholds, and seed schedules are fixed before each experiment; baseline and candidate are compared under the same conditions.
-- Generated code does not run through a shell. API keys are removed from its environment, and execution has time, memory, and log limits.
-- Agentic Research helps design, execute, and audit research; it cannot prove that a study design is sound, data is leak-free, or a conclusion is statistically significant. Domain review remains necessary for high-stakes research.
+The editor's internal menu language is selected when it first loads. Restart the app to fully update those menus after switching languages. Its current official Brazilian Portuguese pack has no translated strings, so those internal menus remain in English; the app's own Portuguese interface and messages are translated.
 
-## Workflow
+## Data and background work
 
-```text
-Research direction
-  -> multi-source evidence retrieval and deduplication
-  -> falsifiable hypothesis and structured review
-  -> baseline/candidate experiment plan
-  -> human approval by default
-  -> bounded iteration on development seeds
-  -> independent held-out validation
-  -> accepted / rejected / inconclusive / invalid
-  -> Markdown / LaTeX / optional PDF report
-```
+Source materials and generated outputs stay in your chosen project folder. Conversations, memories, job records and model configurations are stored in the local application data directory. API keys entered in settings are kept separately in the operating system's credential store, without plaintext storage in project files or the configuration database.
 
-## Install
+Online model requests send the relevant prompts, file contents, memories and tool results to your configured provider, which handles model billing. Literature search requires an internet connection. Local models can support offline tasks that do not need external information. There is currently no cloud account service, device synchronization or team collaboration backend.
 
-Python 3.10+ and Node.js 20+ are required. Install dependencies only through the official package-manager commands:
+Closing the window leaves the app running in the system tray. Quitting stops local execution. Stopping a conversation turn does not cancel independently submitted command jobs; cancel those in **Jobs**.
 
-```bash
-uv sync --extra dev
-npm --prefix frontend ci
-cp .env.example .env
-```
+Scheduled work requires the app to be running. Nothing executes while the computer sleeps, is shut down or the app has quit. On restart, an overdue schedule runs once rather than replaying every missed interval. Conversation history can be restored, but interrupted processes and experiments are not automatically restarted.
 
-Desktop development additionally requires Rust stable and the [Tauri 2 system prerequisites](https://v2.tauri.app/start/prerequisites/):
+## Run from source
+
+Install Node.js 24 or later. Desktop development and packaging also require Rust and the [Tauri platform prerequisites](https://v2.tauri.app/start/prerequisites/). From the repository root:
 
 ```bash
-npm install
-npm --prefix frontend install
-```
-
-The desktop settings page can save provider credentials to its local, Git-ignored `.env`. In cloud mode the page is read-only: a server administrator supplies provider-prefixed environment variables so regular web users cannot modify global credentials. Keys are never returned by the API.
-
-The defaults are `gpt-5.6-terra` through the Responses API, `claude-sonnet-5`, and `gemini-3.5-flash`. For a third-party compatibility gateway, use only model IDs and API modes exposed by that gateway.
-
-## First run
-
-Run diagnostics and the real-process offline demo before configuring an external model:
-
-```bash
-uv run python -m backend.cli doctor
-uv run python -m backend.cli demo
-uv run pytest
-```
-
-The demo launches 12 isolated child processes and stores its auditable artifacts under `data/workspace/runs/`.
-
-## Research commands
-
-```bash
-uv run python -m backend.cli run --direction "Reliable few-shot medical image segmentation" --max-ideas 2
-uv run python -m backend.cli status
-uv run python -m backend.cli approve <run_id>
-uv run python -m backend.cli resume <run_id>
-uv run python -m backend.cli cancel <run_id>
-uv run python -m backend.cli daemon
-```
-
-With the default configuration, a new run pauses at `waiting_review` before generated experiment code executes.
-
-## Web console
-
-Build the frontend and start the local API/static server:
-
-```bash
-./start.sh
-```
-
-Open the port configured by `BACKEND_PORT` (the example `.env` uses `http://127.0.0.1:4019`).
-
-## Tauri desktop app
-
-The desktop app reuses the existing React/Vite frontend and bundles FastAPI as a Python sidecar, so end users do not need to install Python or Node.js.
-
-```bash
+npm ci
 npm run desktop:dev
+```
+
+Build a desktop package for your machine:
+
+```bash
 npm run desktop:build
 ```
 
-The build scripts generate the target-triple sidecar automatically. The Rust host chooses an unused loopback port, creates an ephemeral API token, starts the backend, and terminates it when the app exits. Desktop configuration and research artifacts live in the OS application-data directory. See the [Chinese desktop architecture guide](docs/desktop.zh.md) for details.
+Packages are written to `src-tauri/target/release/bundle/`. Packaged apps include the required Node.js runtime; users do not need to install Node.js separately. Research scripts still require their own project environments. Build natively for each target operating system and architecture. Current macOS builds use local ad-hoc signing; public notarization and signing for other platforms are not configured.
 
-## Docker
+For browser development, run `npm run dev` and open `http://127.0.0.1:5173`. Development data is stored in `.research-data/`. This development interface connects to a service on your machine.
 
-```bash
-cp .env.example .env
-docker compose up --build
-```
+## Current limits
 
-The service binds to `127.0.0.1:8000`, runs as a non-root container user, and persists `data/workspace/` on the host.
+- PDF reading extracts text layers, without OCR. Check complex formulas, tables and figures against the original document.
+- Literature search provides publication metadata and source links, not a substitute for reading papers and verifying scientific claims.
+- Files and commands run with your user permissions. The project folder is not an operating-system sandbox; per-command approval and container isolation are not implemented.
+- The workbench provides code editing and command logs, without an interactive terminal, managed notebook kernels, remote cluster execution or a full IDE debugger.
 
-## Documentation and limitations
+## License
 
-- [Chinese architecture guide](docs/architecture.zh.md)
-- [Research protocol](docs/research-protocol.zh.md)
-- [Security boundaries](docs/security.zh.md)
-- [Frontend guide](frontend/README.md)
-- [Tauri desktop architecture](docs/desktop.zh.md)
-
-Static checks and local resource monitoring are defense-in-depth controls, not a strong sandbox. Run untrusted generated experiments inside a dedicated container or VM, and require domain review before treating output as scientific evidence.
+[GPL-3.0-only](LICENSE). Third-party dependencies retain their respective licenses.

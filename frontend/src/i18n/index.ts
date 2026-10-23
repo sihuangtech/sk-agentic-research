@@ -1,59 +1,79 @@
-import i18n from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import { invoke, isTauri } from '@tauri-apps/api/core';
+import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import en from './locales/en.json';
-import zhCN from './locales/zh-CN.json';
+import { type Locale, isLocale, resolveLocale, supportedLocales } from '../../../shared/locale';
+import serviceZh from '../../../shared/locales/zh-CN.json';
+import { resources } from './resources';
 
-const LANGUAGE_STORAGE_KEY = 'agentic-research.uiLanguage';
-const supportedLanguages = ['zh-CN', 'en'];
-let initialization;
-
-export function normalizeLanguage(language) {
-  return String(language || '').toLowerCase().startsWith('zh') ? 'zh-CN' : 'en';
-}
-
-function syncDocument(language) {
-  const normalized = normalizeLanguage(language);
-  document.documentElement.lang = normalized;
-  document.title = i18n.t('app.documentTitle');
-}
-
-export function initializeI18n() {
-  if (!initialization) {
-    initialization = i18n
-      .use(LanguageDetector)
-      .use(initReactI18next)
-      .init({
-        resources: {
-          'zh-CN': { translation: zhCN },
-          en: { translation: en },
-        },
-        fallbackLng: 'en',
-        supportedLngs: supportedLanguages,
-        load: 'currentOnly',
-        detection: {
-          // A fresh install follows the operating-system/browser language.
-          // A choice made in the switcher is remembered for later launches.
-          order: ['localStorage', 'navigator'],
-          lookupLocalStorage: LANGUAGE_STORAGE_KEY,
-          caches: ['localStorage'],
-          convertDetectedLanguage: normalizeLanguage,
-        },
-        interpolation: { escapeValue: false },
-        react: { useSuspense: false },
-      })
-      .then(() => {
-        syncDocument(i18n.resolvedLanguage);
-        i18n.on('languageChanged', syncDocument);
-        return i18n;
-      });
+export const languageStorageKey = 'agentic-research.language';
+function initialLanguage(): Locale {
+  try {
+    const stored = localStorage.getItem(languageStorageKey);
+    if (isLocale(stored)) return stored;
+  } catch {
+    /* Private browser contexts may disallow persistence. */
   }
-  return initialization;
+  return resolveLocale(navigator.languages.join(','));
 }
-
-export async function changeLanguage(language) {
-  const normalized = normalizeLanguage(language);
-  await i18n.changeLanguage(normalized);
+export const i18n = i18next.createInstance();
+void i18n.use(initReactI18next).init({
+  lng: initialLanguage(),
+  supportedLngs: supportedLocales,
+  fallbackLng: false,
+  initAsync: false,
+  keySeparator: false,
+  resources,
+  interpolation: { escapeValue: false },
+  react: { useSuspense: false },
+});
+export function currentLocale(): Locale {
+  return resolveLocale(i18n.language);
 }
-
-export default i18n;
+function updateDocument() {
+  document.documentElement.lang = currentLocale();
+  document.title = i18n.t('brand');
+}
+i18n.on('languageChanged', updateDocument);
+updateDocument();
+export async function changeLanguage(locale: Locale) {
+  if (isTauri()) await invoke('set_locale', { locale });
+  await i18n.changeLanguage(locale);
+  try {
+    localStorage.setItem(languageStorageKey, locale);
+  } catch {
+    /* Session-only selection. */
+  }
+}
+export async function syncDesktopLanguage() {
+  if (isTauri()) await invoke('set_locale', { locale: currentLocale() });
+}
+export function formatDate(value: number) {
+  return new Intl.DateTimeFormat(currentLocale(), {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(value);
+}
+export function serviceMessage(code?: string, fallback = '') {
+  return code && Object.hasOwn(serviceZh, code)
+    ? String(i18n.t(code as keyof typeof serviceZh, { ns: 'service' }))
+    : fallback;
+}
+export function formatError(error: unknown) {
+  if (typeof error === 'string') return serviceMessage(error, error);
+  return error instanceof Error ? error.toString() : String(error);
+}
+export class UiMessage extends Error {
+  constructor(key: 'savedConfig' | 'testing' | 'networkError');
+  constructor(key: 'connectionSuccess', values: { latency: number });
+  constructor(
+    readonly key: 'savedConfig' | 'testing' | 'networkError' | 'connectionSuccess',
+    readonly values?: { latency: number },
+  ) {
+    super(key);
+  }
+  toString() {
+    if (this.key === 'connectionSuccess')
+      return i18n.t(this.key, { latency: this.values!.latency });
+    return i18n.t(this.key);
+  }
+}

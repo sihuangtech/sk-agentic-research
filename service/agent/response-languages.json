@@ -1,0 +1,12 @@
+{
+  "zh-CN": "默认使用简体中文回答，用户指定其他语言时遵从用户要求。",
+  "zh-TW": "預設使用繁體中文回答；若使用者指定其他語言，請遵從其要求。",
+  "en": "Respond in English unless the user requests another language.",
+  "ja": "ユーザーが別の言語を指定しない限り、日本語で回答してください。",
+  "ko": "사용자가 다른 언어를 요청하지 않는 한 한국어로 답변하세요.",
+  "fr": "Répondez en français, sauf si l’utilisateur demande une autre langue.",
+  "de": "Antworte auf Deutsch, sofern der Nutzer keine andere Sprache verlangt.",
+  "es": "Responde en español, salvo que el usuario solicite otro idioma.",
+  "pt-BR": "Responda em português do Brasil, a menos que o usuário solicite outro idioma.",
+  "ru": "Отвечайте на русском языке, если пользователь не попросит другой язык."
+}

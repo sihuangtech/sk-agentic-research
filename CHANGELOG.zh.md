@@ -1,10 +1,24 @@
 # 更新日志
 
-研序的重要变更均记录在此。由于项目早期没有创建发布 Tag，以下历史根据仓库中的真实提交记录整理。
+第二月亮的重要变更均记录在此。由于项目早期没有创建发布 Tag，以下历史根据仓库中的真实提交记录整理。
 
 英文更新日志：[CHANGELOG.md](CHANGELOG.md)
 
 本文档遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 格式，项目版本遵循[语义化版本](https://semver.org/lang/zh-CN/)。
+
+## 0.4.0 - 2026-10-24
+
+- 更新第二月亮品牌名称、双月科研轨道图标与用户使用说明，GitHub 仓库更名为 sk-research-agent。
+- 按职责拆分前后端、样式与测试，新增每文件 300 行上限检查，并接入 lint、测试与 CI。
+- 使用官方 i18next/react-i18next 和 10 种语言 JSON 资源，新增持久化语言切换、地区匹配、日期格式、API 错误、Agent 回答语言与托盘本地化；接入对应的 Monaco 官方语言包。
+
+- 改为 Tauri + React + TypeScript + Node.js + 官方 Pi SDK 的本地优先架构。
+- 新增项目会话、工具执行、中途指导、排队消息、取消与 Pi 历史恢复。
+- 新增系统钥匙串 API 配置、SQLite 业务存储、个人/项目记忆和定时任务。
+- 新增 Monaco 编辑、PDF.js 预览、PDF 分页文本提取、Crossref 检索及独立命令任务。
+- 新增托盘后台运行和单实例控制；官方 Node 与 npm 发布依赖随桌面应用打包。
+- 移除旧 Python/FastAPI/DBOS 流水线、PyInstaller 打包脚本及云端部署入口，不保留旧 API 兼容。
+- 增加真实 Pi SDK 接入受控模型服务的集成测试；真实 API 需要配置后测试。
 
 ## 0.3.0 - 2026-08-26
 

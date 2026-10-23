@@ -1,45 +1,44 @@
 {
-  "name": "sk-agentic-research-frontend",
+  "name": "sk-research-agent-frontend",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
+    "predev": "node ../scripts/copy-pdf-assets.mjs",
+    "prebuild": "node ../scripts/copy-pdf-assets.mjs",
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "lint": "biome lint src",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.11.1",
-    "axios": "^1.20.0",
-    "i18next": "^26.4.0",
-    "i18next-browser-languagedetector": "^8.2.1",
-    "lucide-react": "^1.34.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-i18next": "^17.0.12",
-    "react-icons": "^5.7.0",
-    "react-router-dom": "^7.18.2"
+    "@monaco-editor/react": "^4.7.0",
+    "@tauri-apps/api": "^2.12.4",
+    "@tauri-apps/plugin-dialog": "^2.8.3",
+    "i18next": "^26.5.6",
+    "katex": "^0.19.0",
+    "lucide-react": "^1.61.0",
+    "monaco-editor": "^0.57.0",
+    "pdfjs-dist": "^6.4.299",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-i18next": "^17.1.5",
+    "react-markdown": "^10.1.0",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
-    "@vitejs/plugin-react": "^6.1.0",
-    "autoprefixer": "^10.5.4",
-    "eslint": "^10.9.1",
-    "eslint-plugin-react-refresh": "^0.5.5",
-    "globals": "^17.11.0",
-    "playwright": "^1.62.1",
-    "postcss": "^8.5.26",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "autoprefixer": "^10.6.1",
+    "playwright": "^1.64.1",
+    "postcss": "^8.5.31",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2"
-  },
-  "allowScripts": {
-    "fsevents@2.3.3": true,
-    "fsevents@2.3.2": true
+    "vite": "^8.3.5"
   }
 }

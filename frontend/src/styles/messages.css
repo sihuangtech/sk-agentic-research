@@ -1,0 +1,135 @@
+.message {
+  max-width: 780px;
+  margin: 20px auto 28px;
+  overflow-wrap: anywhere;
+}
+.message-author {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #cbd4bf;
+}
+.message-author span {
+  font-size: 8px;
+  letter-spacing: 1.2px;
+  color: #6f7782;
+  font-weight: 400;
+}
+.message.user {
+  background: #292c31;
+  padding: 15px 18px;
+  border-radius: 8px;
+}
+.message.user .message-author {
+  color: #b8c2d0;
+}
+.markdown {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #d2d5dc;
+}
+.markdown p {
+  margin: 0 0 12px;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  font-size: 16px;
+  margin: 20px 0 10px;
+}
+.markdown ul,
+.markdown ol {
+  padding-left: 24px;
+  list-style: revert;
+}
+.markdown table {
+  border-collapse: collapse;
+  display: block;
+  overflow: auto;
+  width: 100%;
+}
+.markdown td,
+.markdown th {
+  padding: 8px;
+  border-bottom: 1px solid #3a3d43;
+}
+.markdown blockquote {
+  border-left: 2px solid #80926b;
+  padding-left: 14px;
+  color: #9fa9ad;
+}
+.markdown code {
+  font-size: 11px;
+  background: #14161a;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.markdown a {
+  text-decoration: underline;
+}
+.message.tool {
+  margin-top: 4px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 11px;
+}
+.message.tool summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  color: #aab4c0;
+}
+.message.tool summary span {
+  margin-left: auto;
+  font-size: 9px;
+}
+.activity,
+.queued {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a2b393;
+  margin: 13px 0;
+}
+.queued {
+  color: #96a9bc;
+}
+.pulse {
+  width: 6px;
+  height: 6px;
+  background: #b5c89a;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse 1.6s infinite;
+}
+.error-banner,
+.session-error {
+  background: #412b25;
+  color: #eab9a6;
+  font-size: 12px;
+  padding: 12px 18px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.error-banner button {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.session-error {
+  border-radius: 6px;
+}
+.bad {
+  color: #e6ac96;
+}

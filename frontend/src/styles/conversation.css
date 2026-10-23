@@ -1,0 +1,143 @@
+.conversation {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(ellipse at 55% 30%, #212328 0%, #1c1e22 70%);
+}
+.workspace-header {
+  height: 61px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  font-size: 12px;
+}
+.workspace-header > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.workspace-header strong {
+  font-weight: 500;
+}
+.icon-button {
+  padding: 7px;
+  display: inline-flex;
+}
+.chat-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 18px 32px 36px;
+  scrollbar-gutter: stable;
+}
+.welcome {
+  max-width: 650px;
+  margin: clamp(35px, 11vh, 110px) auto 25px;
+}
+.eyebrow {
+  color: #a5b494;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+.welcome h1 {
+  font-family: "Songti SC", "STSong", serif;
+  font-weight: 500;
+  font-size: clamp(25px, 2.5vw, 37px);
+  letter-spacing: 1px;
+  line-height: 1.6;
+  margin: 17px 0 13px;
+  color: #e4e5de;
+}
+.welcome p {
+  color: #989da6;
+  line-height: 2.1;
+  font-size: 13px;
+}
+.suggestions {
+  display: grid;
+  gap: 8px;
+  margin-top: 30px;
+  max-width: 480px;
+}
+.suggestions button {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border: 1px solid #363a3e;
+  padding: 14px 16px;
+  background: #24272a;
+  text-align: left;
+}
+.suggestions button > svg:first-child {
+  color: #b4c0a4;
+}
+.suggestions strong {
+  font-weight: 400;
+  flex: 1;
+}
+.suggestions button > svg:last-child {
+  color: #747e86;
+}
+.welcome-note {
+  font-size: 10px;
+  color: #727b85;
+  margin-top: 23px;
+  overflow-wrap: anywhere;
+}
+.composer {
+  margin: 0 24px;
+  background: #292c31;
+  border: 1px solid #42474c;
+  border-radius: 12px;
+  box-shadow: 0 4px 25px #0002;
+}
+.composer > textarea {
+  border: 0;
+  background: transparent;
+  resize: none;
+  min-height: 90px;
+  width: 100%;
+  padding: 15px 17px;
+  line-height: 1.8;
+  font-size: 13px;
+}
+.composer > textarea::placeholder {
+  color: #9096a0;
+}
+.composer-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 0 10px 9px;
+  gap: 7px;
+}
+.composer-toolbar select {
+  border: 0;
+  background: #292c31;
+  max-width: 220px;
+  font-size: 11px;
+  padding: 6px;
+}
+.composer-space {
+  flex: 1;
+}
+.send-button {
+  background: #c4d1b4 !important;
+  color: #252d20;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+.composer-caption {
+  font-size: 9px;
+  color: #858b94;
+  padding: 10px 26px 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}

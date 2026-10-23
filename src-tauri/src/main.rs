@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    papermill_desktop_lib::run();
+    agentic_research_lib::run();
 }

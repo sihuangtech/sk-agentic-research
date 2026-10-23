@@ -129,8 +129,8 @@ data/workspace/*
 /docs/作品提交要求.md
 /docs/大赛报名通知.md
 /docs/第一轮作品提交表单.md
-/Papermill_第一轮作品说明文档.md
-/Papermill_第一轮提交信息填写稿.md
+/docs/Papermill_第一轮作品说明文档.md
+/docs/Papermill_第一轮提交信息填写稿.md
 *.docx
 
 # Local agent and tool state
@@ -140,3 +140,11 @@ data/workspace/*
 .cursorindexingignore
 
 # Lockfiles are intentionally tracked for reproducible installs.
+
+# Independent upstream repositories used for architecture research.
+/open-source-repositories/
+
+# Local Agent runtime data and generated desktop resources
+/.research-data/
+/src-tauri/runtime/
+/frontend/public/pdfjs/

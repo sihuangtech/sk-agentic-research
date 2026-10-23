@@ -1,0 +1,102 @@
+.inspector {
+  border-left: 1px solid var(--line);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: #1a1c20;
+  min-width: 0;
+}
+.inspector-tabs {
+  display: flex;
+  gap: 3px;
+  border-bottom: 1px solid var(--line);
+  min-height: 61px;
+  align-items: center;
+  padding: 0 11px;
+  overflow-x: auto;
+}
+.inspector-tabs button {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 9px;
+}
+.panel-content {
+  overflow: auto;
+  padding: 21px 18px;
+  flex: 1;
+}
+.panel-content p.muted {
+  font-size: 11px;
+}
+.panel-content form {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 24px;
+}
+.primary {
+  background: #bac9a9;
+  color: #242b1f;
+  font-weight: 600;
+  padding: 9px 15px;
+  border: 1px solid #bac9a9;
+}
+.primary:hover {
+  background: #cedbbf;
+}
+.record {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+.record small {
+  font-size: 10px;
+  display: block;
+  line-height: 1.7;
+}
+.record textarea {
+  width: 100%;
+  margin-top: 10px;
+  min-height: 90px;
+}
+.record summary {
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.record summary code {
+  font-size: 11px;
+}
+.record-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.record-actions button {
+  padding: 7px 10px;
+  border: 1px solid #41454c;
+  font-size: 11px;
+}
+.status {
+  display: inline-block;
+  font-size: 10px;
+  padding: 0 5px;
+  margin-right: 6px;
+  border-radius: 3px;
+  background: #353a40;
+  color: #aeb9c5;
+}
+.status.completed {
+  color: #bfd5a8;
+  background: #303b2b;
+}
+.status.failed,
+.status.error,
+.status.interrupted {
+  color: #e6b08b;
+}

@@ -1,0 +1,145 @@
+.file-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 18px 10px;
+}
+.panel-heading h2 {
+  margin: 0;
+}
+.panel-heading > span {
+  font-size: 9px;
+  color: #7c858e;
+  letter-spacing: 1px;
+}
+.file-breadcrumb {
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #959da5;
+  overflow-wrap: anywhere;
+}
+.file-breadcrumb button {
+  padding: 4px;
+}
+.file-list {
+  overflow: auto;
+  max-height: 38%;
+  min-height: 130px;
+  padding: 0 10px 14px;
+}
+.file-list button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 7px 8px;
+  font-size: 11px;
+  color: #b8bfc8;
+}
+.file-list button span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.file-list svg {
+  color: #8f9b83;
+  flex-shrink: 0;
+}
+.file-list small {
+  font-size: 9px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.file-editor {
+  border-top: 1px solid var(--line);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+  overflow: hidden;
+}
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 6px;
+  background: #24272c;
+  font-size: 10px;
+}
+.editor-toolbar > span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.editor-toolbar button {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  font-size: 10px;
+}
+.file-editor textarea {
+  flex: 1;
+  border: 0;
+  border-radius: 0;
+  background: #17191d;
+  resize: none;
+  padding: 12px;
+  font-family: "SFMono-Regular", monospace;
+  font-size: 11px;
+  white-space: pre;
+  min-height: 0;
+  tab-size: 2;
+}
+.file-editor iframe {
+  width: 100%;
+  flex: 1;
+  border: 0;
+  min-height: 300px;
+}
+.file-editor > section {
+  flex: 1;
+  min-height: 0;
+}
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+.pdf-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding: 8px;
+  font-size: 10px;
+}
+.pdf-toolbar select {
+  padding: 3px;
+  font-size: 10px;
+}
+.pdf-canvas {
+  overflow: auto;
+  flex: 1;
+  padding: 8px;
+  background: #121418;
+}
+.pdf-canvas canvas {
+  display: block;
+  margin: auto;
+}
+.file-editor img {
+  max-width: 100%;
+  object-fit: contain;
+}

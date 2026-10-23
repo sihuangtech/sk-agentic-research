@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "types": [
+      "node"
+    ],
+    "sourceMap": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "service/**/*.ts",
+    "shared/**/*.ts"
+  ],
+  "exclude": [
+    "service/tests"
+  ]
+}

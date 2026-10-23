@@ -1,10 +1,24 @@
 # Changelog
 
-All notable changes to CaiQi Scholar are documented here. This history was reconstructed from repository commits because the project did not tag its early releases.
+All notable changes to Second Moon are documented here. Early history was reconstructed from repository commits.
 
 Chinese changelog: [CHANGELOG.zh.md](CHANGELOG.zh.md)
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [Semantic Versioning](https://semver.org/).
+
+## 0.4.0 - 2026-10-24
+
+- Introduce Second Moon branding, a moon-and-research-orbit icon, and rewritten user guides; rename the GitHub repository to sk-research-agent.
+- Split frontend, backend, styles and tests by responsibility; enforce a 300-line file limit through lint, tests and CI.
+- Add 10-language switching using official i18next/react-i18next and JSON catalogs, persisted preferences, regional matching, localized dates/API errors/Agent response instructions/tray labels, and matching official Monaco language packs.
+
+- Adopt Tauri, React, TypeScript, Node.js, and the published Pi Coding Agent SDK.
+- Add project conversations, tool execution, steering, follow-ups, abort, and canonical Pi history restoration.
+- Add OS-keychain model settings, SQLite business storage, scoped memories, and recurring research tasks.
+- Add Monaco editing, PDF.js previews, paginated PDF text extraction, Crossref search, and managed command jobs.
+- Add single-instance tray operation and packaged official Node/npm runtime dependencies.
+- Remove the Python/FastAPI/DBOS pipeline, PyInstaller packaging, and legacy server deployment without compatibility shims.
+- Add integration tests using the real Pi SDK against a controlled model endpoint. Live-provider behavior requires configured credentials.
 
 ## 0.3.0 - 2026-08-26
 
