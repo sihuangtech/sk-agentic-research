@@ -121,6 +121,9 @@ data/workspace/*
 # Documentation is private and stays local
 /docs/
 
+# Local legacy branding and submission assets
+/assets/
+
 # Local submission documents may contain private information
 # Private competition documents (including their former root paths)
 /作品提交要求.md
